@@ -3,19 +3,22 @@
 # It must be exactly 16 bytes long
 KEY = \"1234567890123456\"
 
-PROGS = didentd didentd-decrypt didentd-name didentd-conf didentd-name-conf leapsecs
+PROGS = didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf leapsecs
 
 CFLAGS = -g -Wall
 
 all: djb $(PROGS) 
 
-didentd: didentd.o rijndael.o didentd-genanswer-crypt.o djb.a
-	$(CC) -o $@ $^ 
+didentd: didentd.o rijndael.o didentd-genanswer-crypt.o base64-encode.o djb.a
+	$(CC) -o $@ $^ OA
 
 didentd-name: didentd.o didentd-genanswer-name.o djb.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-didentd-decrypt: didentd-decrypt.o rijndael.o djb.a
+didentd-static: didentd.o didentd-genanswer-static.o djb.a
+	$(CC) $(CFLAGS) -o $@ $^
+
+didentd-decrypt: didentd-decrypt.o rijndael.o base64-decode.o djb.a
 	$(CC) -o $@ $^
 
 didentd-conf: didentd-conf.c djb.a
@@ -40,7 +43,7 @@ install: $(PROGS)
 	install -m 755 -s didentd-name-conf /usr/local/bin
 	install -m 755 -s didentd-decrypt /usr/local/bin
 	install -m 755 -s leapsecs /usr/local/bin
-	install -m 755 -s leapsecs.dat /etc
+	install -m 755 leapsecs.dat /etc
 
 clean:
 	rm -f $(PROGS) *.o 
