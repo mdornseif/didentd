@@ -1,4 +1,6 @@
-/* dident.c by drt@ailis.de
+/* $Id: didentd-genanswer-crypt.c,v 1.2 2000/04/19 13:40:27 drt Exp $
+ * 
+ * dident.c by drt@ailis.de
  * - generate a RfC 1413 reply containing 
  *   uid of connection localip, localport, 
  *   remoteip, remoteport and a timestamp
@@ -9,8 +11,11 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
- * Revision 1.1  2000/04/12 16:07:19  drt
- * Initial revision
+ * Revision 1.2  2000/04/19 13:40:27  drt
+ * base64 a la MIME encoding - see RfC1341
+ *
+ * Revision 1.1.1.1  2000/04/12 16:07:19  drt
+ * initial revision
  *
  */
 
@@ -19,8 +24,9 @@
 #include "djb/uint16.h"
 #include "djb/uint32.h"
 #include "rijndael.h"
+#include "base64.h"
 
-static char *rcsid = "$Id: didentd-genanswer-crypt.c,v 1.1 2000/04/12 16:07:19 drt Exp $";
+static char *rcsid = "$Id: didentd-genanswer-crypt.c,v 1.2 2000/04/19 13:40:27 drt Exp $";
 
 #define NULL 0
 
@@ -73,17 +79,8 @@ char *generate_answer(stralloc *answer, uint32 uid)
     /* encrypt with rijndael */
     rijndaelEncrypt(tmp.s);
 
-    for(i = 0; i < 24;)
-      {
-	x[0] = (tmp.s[i] & 0x3f) + 60;
-	x[3] = (tmp.s[i++] & 0xc0) >> 2;
-	x[1] = (tmp.s[i] & 0x3f) + 60;
-	x[3] |= (tmp.s[i++] & 0xc0) >> 4;
-	x[2] = (tmp.s[i] & 0x3f) + 60;
-	x[3] |= (tmp.s[i++] & 0xc0) >> 6;
-       	x[3] += 60;
-	stralloc_catb(&out, x, 4);
-      }
+    stralloc_readyplus(&out, 32);
+    base64encode(out.s, tmp.s, 24);
 
     stralloc_catb(answer, out.s, 32); 
     stralloc_cats(answer, "\r\n");
