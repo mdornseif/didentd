@@ -6,8 +6,11 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
- * Revision 1.1  2000/04/12 16:07:17  drt
- * Initial revision
+ * Revision 1.2  2000/04/20 15:06:16  drt
+ * Added base64 decoding
+ *
+ * Revision 1.1.1.1  2000/04/12 16:07:17  drt
+ * initial revision
  *
  */
 
@@ -21,11 +24,13 @@
 #include "djb/tai.h"
 #include "djb/uint16.h"
 #include "djb/uint32.h"
+
 #include "caltime.h"
 #include "leapsecs.h"
 #include "rijndael.h"
+#include "base64.h"
 
-static char *rcsid = "$Id: didentd-decrypt.c,v 1.1 2000/04/12 16:07:17 drt Exp $";
+static char *rcsid = "$Id: didentd-decrypt.c,v 1.2 2000/04/20 15:06:16 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -73,18 +78,10 @@ int main(int argc, char *argv[])
 
       if (line.len < 34)
 	return 0;
-      
-      for(i = 0; i < 32; i += 4)
-	{
-	  x[0] = line.s[i] - 60;
-	  x[0] |= ((line.s[i+3]-60) & 0x30) << 2;
-	  x[1] = line.s[i+1] - 60;
-	  x[1] |= ((line.s[i+3]-60) & 0x0c) << 4;
-	  x[2] = line.s[i+2] - 60;
-	  x[2] |= ((line.s[i+3]-60) & 0x03) << 6;
-	  stralloc_catb(&out, x, 3);
-	}
-            
+ 
+      stralloc_ready(&out, 24);
+      base64decode(out.s, line.s, 32);
+
       /* decrypt with rijndael */
       rijndaelDecrypt(out.s);
       
