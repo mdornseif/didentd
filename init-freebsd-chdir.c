@@ -1,12 +1,13 @@
-/* $Id: init-freebsd-chdir.c,v 1.1 2001/10/12 12:27:48 drt Exp $
+/* $Id: init-freebsd-chdir.c,v 1.2 2001/10/15 00:25:58 drt Exp $
  *  --drt@un.bewaff.net - http://c0re.jp/c0dr/didentd/
  *
  * system specific initialisation for freebsd - it DOES NOT CHROOT
  * 
  */
 
-static char rcsid[] = "$Id: init-freebsd-chdir.c,v 1.1 2001/10/12 12:27:48 drt Exp $";
+static char rcsid[] = "$Id: init-freebsd-chdir.c,v 1.2 2001/10/15 00:25:58 drt Exp $";
 
+#include <unistd.h> /* for chdir(2) */
 #include "env.h"
 #include "scan.h"
 #include "prot.h"
