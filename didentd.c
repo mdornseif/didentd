@@ -1,35 +1,40 @@
-/* dident.c by drt@ailis.de
- * - core for an ident server 
+/* $Id: didentd.c,v 1.2 2000/04/28 12:54:56 drt Exp $
+ *  --drt@ailis.de
+ *
+ * core for an ident server 
  * 
  * You might find more info at http://rc23.cx/
  *
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd.c,v $
- * Revision 1.1  2000/04/12 16:07:11  drt
- * Initial revision
+ * Revision 1.2  2000/04/28 12:54:56  drt
+ * Cleanup, better integration of libtai and dnscache
+ *
+ * Revision 1.1.1.1  2000/04/12 16:07:11  drt
+ * initial revision
  *
  */
 
 #include <unistd.h>              /* for close */
 #include <pwd.h>                 /* for getpwuid */
 
-#include "djb/buffer.h"
-#include "djb/byte.h"
-#include "djb/env.h"
-#include "djb/fmt.h"
-#include "djb/getln.h"
-#include "djb/ip4.h"
-#include "djb/open.h"
-#include "djb/prot.h"
-#include "djb/scan.h"
-#include "djb/stralloc.h"
-#include "djb/strerr.h"
-#include "djb/timeoutread.h"
-#include "djb/uint16.h"
-#include "djb/uint32.h"
+#include "buffer.h"
+#include "byte.h"
+#include "env.h"
+#include "fmt.h"
+#include "getln.h"
+#include "ip4.h"
+#include "open.h"
+#include "prot.h"
+#include "scan.h"
+#include "stralloc.h"
+#include "strerr.h"
+#include "timeoutread.h"
+#include "uint16.h"
+#include "uint32.h"
 
-static char *rcsid = "$Id: didentd.c,v 1.1 2000/04/12 16:07:11 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.2 2000/04/28 12:54:56 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -50,11 +55,12 @@ uint32 rip = 0;
 uint16 lport = 0;
 uint16 rport = 0;
 
-
 /* returns the uid asociated with the connection defined by the
    globals lip, rip, lport, rport or 0xffffffff if unsucessfull 
 
-   This is linux specific bound to the proc-filesystem
+   This is linux specific bound to the proc-filesystem. If somebody
+   provides me with Documentation on how to to get connection
+   Information on other Unices please contact me.
  */
 
 unsigned get_connection_info()

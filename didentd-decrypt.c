@@ -1,12 +1,16 @@
-/* $Id: didentd-decrypt.c,v 1.3 2000/04/25 22:31:48 drt Exp $
+/* $Id: didentd-decrypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $
+ *  --drt@ailis.de
  *
- * - decryptor for encrypted didentd replys 
+ * decryptor for encrypted didentd replys 
  * 
  * You might find more info at http://rc23.cx/
  *
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.4  2000/04/28 12:54:55  drt
+ * Cleanup, better integration of libtai and dnscache
+ *
  * Revision 1.3  2000/04/25 22:31:48  drt
  * *** empty log message ***
  *
@@ -19,22 +23,23 @@
  */
 
 #include <pwd.h>                 /* for getpwuid */
-#include "djb/buffer.h"
-#include "djb/fmt.h"
-#include "djb/getln.h"
-#include "djb/ip4.h"
-#include "djb/stralloc.h"
-#include "djb/strerr.h"
-#include "djb/tai.h"
-#include "djb/uint16.h"
-#include "djb/uint32.h"
 
+#include "buffer.h"
 #include "caltime.h"
+#include "fmt.h"
+#include "getln.h"
+#include "ip4.h"
 #include "leapsecs.h"
+#include "stralloc.h"
+#include "strerr.h"
+#include "tai.h"
+#include "uint16.h"
+#include "uint32.h"
+
 #include "rijndael.h"
 #include "base64.h"
 
-static char *rcsid = "$Id: didentd-decrypt.c,v 1.3 2000/04/25 22:31:48 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $";
 
 #define stderr 2
 #define stdout 1

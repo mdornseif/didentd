@@ -1,12 +1,16 @@
-/* $Id: didentd-conf.c,v 1.2 2000/04/25 22:32:22 drt Exp $
+/* $Id: didentd-conf.c,v 1.3 2000/04/28 12:54:55 drt Exp $
+ *  --drt@ailis.de
  *
- * - create directory structure for using didentd with svscan
+ * create directory structure for using didentd with svscan
  * 
  * You might find more info at http://rc23.cx/
  *
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-conf.c,v $
+ * Revision 1.3  2000/04/28 12:54:55  drt
+ * Cleanup, better integration of libtai and dnscache
+ *
  * Revision 1.2  2000/04/25 22:32:22  drt
  * Code Cleanups
  *
@@ -16,12 +20,13 @@
  */
 
 #include <pwd.h>
-#include "djb/strerr.h"
-#include "djb/exit.h"
-#include "djb/auto_home.h"
-#include "djb/generic-conf.h"
 
-static char *rcsid="$Id: didentd-conf.c,v 1.2 2000/04/25 22:32:22 drt Exp $";
+#include "auto_home.h"
+#include "exit.h"
+#include "generic-conf.h"
+#include "strerr.h"
+
+static char rcsid[] = "$Id: didentd-conf.c,v 1.3 2000/04/28 12:54:55 drt Exp $";
 
 #define FATAL "didentd-conf: fatal: "
 

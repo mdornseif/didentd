@@ -1,6 +1,6 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.3 2000/04/25 22:55:01 drt Exp $
- * 
- * dident.c by drt@ailis.de
+/* $Id: didentd-genanswer-crypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $
+ *  --drt@ailis.de
+ *
  * - generate a RfC 1413 reply containing 
  *   uid of connection localip, localport, 
  *   remoteip, remoteport and a timestamp
@@ -11,6 +11,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.4  2000/04/28 12:54:55  drt
+ * Cleanup, better integration of libtai and dnscache
+ *
  * Revision 1.3  2000/04/25 22:55:01  drt
  * code cleanups
  *
@@ -22,14 +25,15 @@
  *
  */
 
-#include "djb/stralloc.h"
-#include "djb/tai.h"
-#include "djb/uint16.h"
-#include "djb/uint32.h"
+#include "stralloc.h"
+#include "tai.h"
+#include "uint16.h"
+#include "uint32.h"
+
 #include "rijndael.h"
 #include "base64.h"
 
-static char *rcsid = "$Id: didentd-genanswer-crypt.c,v 1.3 2000/04/25 22:55:01 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $";
 
 #define NULL 0
 

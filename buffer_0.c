@@ -1,14 +1,17 @@
-/* from DJBs libtai
+/* $Id: buffer_0.c,v 1.2 2000/04/28 12:54:55 drt Exp $
  * 
- * drt@ailis.de
+ * from DJB
  *
- * $Id: buffer_0.c,v 1.1 2000/04/12 16:07:17 drt Exp $
- * 
- * $Log
+ * $Log: buffer_0.c,v $
+ * Revision 1.2  2000/04/28 12:54:55  drt
+ * Cleanup, better integration of libtai and dnscache
+ *
  */
 
-#include "djb/readwrite.h"
-#include "djb/buffer.h"
+#include "buffer.h"
+#include "readwrite.h"
+
+static char rcsid[] = "$Id: buffer_0.c,v 1.2 2000/04/28 12:54:55 drt Exp $";
 
 int buffer_0_read(fd,buf,len) int fd; char *buf; int len;
 {

@@ -1,11 +1,9 @@
 * add basic key managment
-* test with different versions of ircd
-* write manpages
-* add test programm
-* overview of used crypto - what's about known plaintext attacks?
-* check all return values of function calls
+* code cleanup
 * check if we should use timeouts while writing
-* add ipv6 support
-* clean use of dans stuff
+* overview of used crypto - what's about known plaintext attacks?
+* write manpages
 * add didentd-static-conf
-* fix problem with base64 encoding
+* add test programm
+* check all return values of ALL function calls
+* add ipv6 support
