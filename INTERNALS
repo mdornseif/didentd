@@ -1,0 +1,67 @@
+This file is intended to give others an overview about the code
+structure of didentd to faciliate auditing and to communicate some of
+my thoughts about the ident protocol in general.
+
+All didentd* daemons are designed to run with a uscpi-tcp server. This
+means you can run them with inetd and tcp-env or tcpserver. If you use
+tcpserver with IPv6 functionality didentd will be able to answer
+requests via IPv6.
+
+didentd.c contains the main procedure  which should be portable
+between different operating systems, but for now it isn't because the
+call to dropprivs() is Linux speciffic.
+
+It then reads information about the connection from the enviroment
+like described at http://cr.cp.to/... This way it also decides if the
+client is calling via IPv4 or IPv6. didentd* reads the query from the
+client into a 16 byte buffer using a 60 second timeout.
+
+After changing the portnumbers read from the client from their ASCII
+representation to binary representation it calles  
+get_connection_info(4|6)(localip, localport, remoteip, remoteport);
+
+This functions reside in different files and are operating system
+specific. At the moment there is ony support for Linux /proc filesystem. 
+The idea is that you just have to link an different File containing
+get_connection_info() to support an other OS.
+
+get_connection_info() opens tcp (or tcp6) and scans line for line
+comparing information with the Information about the requested
+connection. This yields a Problem described in the nmap manpage
+documenting the "-I" option:
+
+-I  This turns on TCP reverse ident scanning. As noted by Dave
+    Goldsmith in a 1996 Bugtraq post, the ident protocol (rfc 1413)
+    allows for the disclosure of the username that owns any process
+    connected via TCP, even if that process didn't initiate the
+    connection. So you can, for example, connect to the http port and
+    then use identd to find out whether the server is running as
+    root. This can only be done with a full TCP connection to the
+    target port (i.e. the -sT scanning option). When -I is used, the
+    remote host's identd is queried for each open port found.
+
+The problem is that after a connection is established there is no way
+of finding out which side initiated the connection. There are two
+aproaches to solve this Problem.
+
+a) disallow querys for ports below 1024.
+
+b) disallow querys for connections to ports when there is another
+   socket in TCP_LISTEN state for the same portnumber.
+
+Solution b) has some overhead compared to a) but a has troubles with
+outbound connections from low ports like used by ssh for example. 
+
+At the Moment didentd* implements none of this since it was designed
+to be compact and to hand out encrypted audit packets which would
+defeat reverse ident scanning by delivering no information useful to
+the attacker. didentd-name nevertheless would profit from a
+implementation of this.
+
+get_connection_info() returns the uid of the connection owner or
+0xffffffff on an error condition / not found error.
+
+32 bit unsigned int values are used for the uid to accomodate the
+future switch to bigger uids in Linux.
+
+generate_answer() is called then to 
