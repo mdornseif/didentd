@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.10 2001/10/11 15:43:07 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.11 2001/10/12 12:29:54 drt Exp $
  *  --drt@un.bewaff.net
  *
  * - generate a RfC 1413 reply containing 
@@ -25,11 +25,13 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.10 2001/10/11 15:43:07 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.11 2001/10/12 12:29:54 drt Exp $";
 
 /* returns a pointer to a string describing a problem or NULL if
 sucessfull, adds to answer the part after the ports of an RfC 1413
 reply */
+
+static char ok[] = "ok";
 
 char *generate_answer(stralloc *answer, uint32 uid, 
 		      char *lip, uint16 lport, char *rip, uint16 rport)
@@ -71,6 +73,6 @@ char *generate_answer(stralloc *answer, uint32 uid,
   stralloc_cats(answer, "\r\n");
   stralloc_0(answer);
   
-  return NULL;
+  return ok;
 }
 
