@@ -1,4 +1,4 @@
-/* $Id: didentd.c,v 1.4 2000/05/08 23:07:56 drt Exp $
+/* $Id: didentd.c,v 1.5 2000/05/09 06:33:47 drt Exp $
  *  --drt@ailis.de
  *
  * core for an ident server 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd.c,v $
+ * Revision 1.5  2000/05/09 06:33:47  drt
+ * Finished IPv6 Support
+ *
  * Revision 1.4  2000/05/08 23:07:56  drt
  * Logging of localip:port
  *
@@ -24,6 +27,8 @@
 
 #include <unistd.h>              /* for close */
 #include <pwd.h>                 /* for getpwuid */
+#include <stdlib.h>              /* for random() */
+#include <time.h>                /* time */
 
 #include "buffer.h"
 #include "byte.h"
@@ -31,6 +36,7 @@
 #include "fmt.h"
 #include "getln.h"
 #include "ip4.h"
+#include "ip6.h"
 #include "open.h"
 #include "prot.h"
 #include "scan.h"
@@ -41,7 +47,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.4 2000/05/08 23:07:56 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.5 2000/05/09 06:33:47 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -113,6 +119,7 @@ int main()
   /* chroot() to ROOT and switch to $UID:$GID */
   droppriv();
 
+
   x = env_get("PROTO");
   if(x)
     {
@@ -125,6 +132,13 @@ int main()
       buffer_puts(buffer_2, "warning: can't determine $PROTO\n");
       buffer_flush(buffer_2);
     }
+
+  srandom(((long long) getpid () *
+	    (long long) time(0) *
+	    (long long) getppid() * 
+	    (long long) random() * 
+	    (long long) clock()) % 0xffffffff);
+
   /* since we run under tcpserver, we can get all info 
      about the remote side from the enviroment */
   remotehost = env_get("TCPREMOTEHOST");
@@ -134,16 +148,31 @@ int main()
   localport = env_get("TCPLOCALPORT");
   if (localport) scan_ushort(localport, &lport); else localport = "0";
 
+  remoteip = env_get("TCPREMOTEIP");
+  if (!remoteip) remoteip = "0.0.0.0";
+  localip = env_get("TCPLOCALIP");
+  if (!localip) localip = "0.0.0.0";
+  
   if(proto == 4)
     {
-      remoteip = env_get("TCPREMOTEIP");
-      if (remoteip && ip4_scan(remoteip, rip)) ; else byte_zero(rip,4);
-      if (!remoteip) remoteip = "0.0.0.0";
+      if(remoteip) 
+	ip4_scan(remoteip, rip);
+
+      if(localip) 
+	ip4_scan(localip, lip);
       
-      localip = env_get("TCPLOCALIP");
-      if (localip && ip4_scan(localip, lip)) ; else byte_zero(lip,4);
-      /* Is there a way to do this a nicer way */
-      if (!localip) localip = "0.0.0.0";
+      /* seed some entropy into the by IPv4 unsused bytes */
+      rip[5] = (char) random() & 0xff;
+      rip[6] = (char) random() & 0xff;
+    }
+
+  if(proto == 6)
+    {
+      if (remoteip) 
+	ip6_scan(remoteip, rip);
+
+      if (localip) 
+	ip6_scan(localip, lip);
     }
 
   /* Read the request from the client and \0-terminate it */
