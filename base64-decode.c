@@ -1,4 +1,4 @@
-/* $Id: base64-decode.c,v 1.3 2000/04/25 22:32:22 drt Exp $
+/* $Id: base64-decode.c,v 1.4 2000/04/25 23:45:12 drt Exp $
  * 
  * Found somewere on the internet stating:
  */
@@ -9,6 +9,9 @@
 /* Hacked by drt@ailis.de to be a library function working on memory blocks
  *
  * $Log: base64-decode.c,v $
+ * Revision 1.4  2000/04/25 23:45:12  drt
+ * signed/unsigned error only popping up on ix86, not PPC
+ *
  * Revision 1.3  2000/04/25 22:32:22  drt
  * Code Cleanups
  *
@@ -17,11 +20,11 @@
  *
  */ 
 
-static char rcsid[] = "$Id: base64-decode.c,v 1.3 2000/04/25 22:32:22 drt Exp $";
+static char rcsid[] = "$Id: base64-decode.c,v 1.4 2000/04/25 23:45:12 drt Exp $";
 
 unsigned char alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-int base64decode(char *dest, char *src, int l)
+int base64decode(unsigned char *dest, unsigned char *src, int l)
 {
     static char inalphabet[256], decoder[256];
     int i, bits, c, char_count;
