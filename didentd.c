@@ -1,4 +1,4 @@
-/* $Id: didentd.c,v 1.3 2000/05/08 14:26:04 drt Exp $
+/* $Id: didentd.c,v 1.4 2000/05/08 23:07:56 drt Exp $
  *  --drt@ailis.de
  *
  * core for an ident server 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd.c,v $
+ * Revision 1.4  2000/05/08 23:07:56  drt
+ * Logging of localip:port
+ *
  * Revision 1.3  2000/05/08 14:26:04  drt
  * IPv6 support, first try
  *
@@ -38,7 +41,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.3 2000/05/08 14:26:04 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.4 2000/05/08 23:07:56 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -181,20 +184,20 @@ int main()
   buffer_puts(buffer_2, remoteip);  
   buffer_puts(buffer_2, ":");
   buffer_puts(buffer_2, remoteport);
+  buffer_puts(buffer_2, " -> ");
+  buffer_puts(buffer_2, localip);  
+  buffer_puts(buffer_2, ":");
+  buffer_puts(buffer_2, localport);
   buffer_puts(buffer_2, " [");
   buffer_puts(buffer_2, problem);
   buffer_puts(buffer_2, "] ");
   if(uid < 0xffffffff)
-    {
       buffer_put(buffer_2, strnum, fmt_ulong(strnum,uid));
-    }
   else
-    {
-       buffer_puts(buffer_2, "unknown");
-    }   
+       buffer_puts(buffer_2, "unknown");  
   buffer_puts(buffer_2, " ");
   buffer_put(buffer_2, strnum, fmt_ulong(strnum,lport));
-  buffer_puts(buffer_2, ", ");
+  buffer_puts(buffer_2, " , ");
   buffer_put(buffer_2, strnum, fmt_ulong(strnum,rport));
   buffer_puts(buffer_2, "\n");
   buffer_flush(buffer_2);
