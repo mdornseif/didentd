@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2001/10/11 15:26:12 drt Exp $
+# $Id: Makefile,v 1.14 2001/10/11 18:02:11 drt Exp $
 
 PROGS = djblib.a didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
 
@@ -49,4 +49,7 @@ clean:
 distclean:
 	-rm -f core $(PROGS) *~ *.o *.a 
 	(cd djblib; cat TARGETS |xargs rm -f)
-
+	rm -f djblib/auto-str djblib/auto_home.c djblib/chkshsgr djblib/choose
+	rm -f djblib/compile djblib/hasshsgr.h djblib/iopause.h djblib/load
+	rm -f djblib/makelib djblib/select.h djblib/systype djblib/uint32.h 
+	rm -f djblib/uint64.h
