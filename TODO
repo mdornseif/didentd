@@ -3,9 +3,7 @@
 * write manpages
 * add test programm
 * overview of used crypto - what's about known plaintext attacks?
-* add an identd-static for static replys.
 * check all return values of function calls
 * check if we should use timeouts while writing
-* use base64 encoding
 * add ipv6 support
 * clean use of dans stuff
