@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.6 2000/05/08 14:26:04 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.7 2000/05/09 06:34:36 drt Exp $
  *  --drt@ailis.de
  *
  * - generate a RfC 1413 reply containing 
@@ -11,6 +11,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.7  2000/05/09 06:34:36  drt
+ * Changed dataformat for IPv6 support
+ *
  * Revision 1.6  2000/05/08 14:26:04  drt
  * IPv6 support, first try
  *
@@ -31,10 +34,11 @@
  *
  */
 
+#include "time.h"
+
 #include "env.h"
 #include "stralloc.h"
 #include "strerr.h"
-#include "tai.h"
 #include "uint16.h"
 #include "uint32.h"
 
@@ -43,9 +47,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.6 2000/05/08 14:26:04 drt Exp $";
-
-#define NULL 0
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.7 2000/05/09 06:34:36 drt Exp $";
 
 extern uint32 lip;
 extern uint32 rip;
@@ -61,39 +63,30 @@ char *generate_answer(stralloc *answer, uint32 uid,
 {
   char *x;
   char *problem = "ok";
-  char buf[TAI_PACK];
+  char buf[5];
   stralloc out = {0};
   stralloc tmp = {0};
   stralloc key = {0};
-  struct tai now;
 
   /* get key from enviroment */
   x = env_get("KEY");
   if (!x)
-    {
       strerr_die2x(111, "didentd fatal: ", "$KEY not set");
-    }
 
   stralloc_copys(&key, x);
   txtparse(&key);
-  pad(&key, 16);
-
-  tai_now(&now);
+  pad(&key, 32);
   
   stralloc_cats(answer, " : USERID : OTHER : ");
-  uint32_pack(buf, uid);
-  stralloc_catb(&tmp, buf, 4);
+  uint32_pack(buf, uid); stralloc_catb(&tmp, buf, 4);
+  uint16_pack(buf, lport); stralloc_catb(&tmp, buf, 2);
+  uint16_pack(buf, rport); stralloc_catb(&tmp, buf, 2);
+  uint32_pack(buf, time(NULL)); stralloc_catb(&tmp, buf, 4);
   stralloc_catb(&tmp, lip, 4);
-  uint16_pack(buf, lport);
-  stralloc_catb(&tmp, buf, 2);
-  stralloc_catb(&tmp, rip, 4);
-  uint16_pack(buf, rport);
-  stralloc_catb(&tmp, buf, 2);
-  tai_pack(buf, &now);
-  stralloc_catb(&tmp, buf, sizeof buf);		  
+  stralloc_catb(&tmp, rip, 8);
  
   /* initialize rijndael */
-  rijndaelKeySched(6, 4, key.s);
+  rijndaelKeySched(6, 8, key.s);
   
   /* encrypt with rijndael */
   rijndaelEncrypt(tmp.s);

@@ -1,4 +1,4 @@
-/* $Id: didentd-decrypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $
+/* $Id: didentd-decrypt.c,v 1.6 2000/05/09 06:34:29 drt Exp $
  *  --drt@ailis.de
  *
  * decryptor for encrypted didentd replys 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.6  2000/05/09 06:34:29  drt
+ * Changed dataformat for IPv6 support
+ *
  * Revision 1.5  2000/04/30 02:01:58  drt
  * key is now taken from the enviroment
  *
@@ -26,13 +29,15 @@
  */
 
 #include <pwd.h>                 /* for getpwuid */
+#include <time.h>
 
 #include "buffer.h"
-#include "caltime.h"
+#include "byte.h"
 #include "env.h"
 #include "fmt.h"
 #include "getln.h"
 #include "ip4.h"
+#include "ip6.h"
 #include "leapsecs.h"
 #include "stralloc.h"
 #include "strerr.h"
@@ -45,7 +50,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-decrypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.6 2000/05/09 06:34:29 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -65,34 +70,29 @@ int main(int argc, char *argv[])
   char strip4[IP4_FMT];
   stralloc key = {0};
   stralloc out = {0};
-  struct tai t;
   struct passwd *pw;
   stralloc line = {0};
   uint32 uid = 0;
-  uint32 lip = 0;
-  uint32 rip = 0;
+  char lip[16] = {0};
+  char rip[16] = {0};
   uint16 lport = 0;
   uint16 rport = 0;
-  struct caltime ct;
+  time_t time;
 
   if (leapsecs_init() == -1) 
-    {
       strerr_die2x(111, FATAL, "unable to init leapsecs");
-    }
 
   /* get key from enviroment */
   x = env_get("KEY");
   if (!x)
-    {
       strerr_die2x(111, FATAL, "$KEY not set");
-    }
 
   stralloc_copys(&key, x);
   txtparse(&key);
-  pad(&key, 16);
+  pad(&key, 32);
 
   /* initialize rijndael */
-  rijndaelKeySched(6, 4, key.s);
+  rijndaelKeySched(6, 8, key.s);
 
   while(match)
     {
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
       stralloc_0(&line);
 
-      if (line.len < 34)
+      if (line.len < 33)
 	return 0;
  
       stralloc_ready(&out, 24);
@@ -111,27 +111,24 @@ int main(int argc, char *argv[])
       rijndaelDecrypt(out.s);
       
       uint32_unpack(out.s, &uid);
-      uint32_unpack(&out.s[4], &lip);
-      uint16_unpack(&out.s[8], &lport);
-      uint32_unpack(&out.s[10], &rip);
-      uint16_unpack(&out.s[14], &rport);
-      tai_unpack(&out.s[16], &t);
+      uint16_unpack(&out.s[4], &lport);
+      uint16_unpack(&out.s[6], &rport);
+      uint32_unpack(&out.s[8], &time);
+      byte_copy(lip, 4, &out.s[12]);
+      byte_copy(lip, 8, &out.s[16]);
   
-      caltime_utc(&ct, &t,(int *) 0, (int *) 0);
-      stralloc_ready(&out, 256);
-      out.len = caltime_fmt(out.s, &ct);
+      stralloc_copys(&out, ctime(&time));
+      out.len--; /* remove \n */
       stralloc_cats(&out, " ");
       stralloc_0(&out);
 
       buffer_put(buffer_1, out.s, out.len);
       
       if(uid == 0xffffffff)
-	{
 	  buffer_puts(buffer_1, "unknown(-");
-	}
       else
 	{
-	  pw = getpwuid(uid);
+	  pw = getpwuid(uid); /* XXX: check for error */
 	  if(pw) buffer_puts(buffer_1, pw->pw_name);
 	  buffer_puts(buffer_1, "(");
 	  buffer_put(buffer_1, strnum, fmt_ulong(strnum,uid));	  
