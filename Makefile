@@ -10,7 +10,7 @@ CFLAGS = -g -Wall
 all: djb $(PROGS) 
 
 didentd: didentd.o rijndael.o didentd-genanswer-crypt.o base64-encode.o djb.a
-	$(CC) -o $@ $^ OA
+	$(CC) $(CFLAGS) -o $@ $^ 
 
 didentd-name: didentd.o didentd-genanswer-name.o djb.a
 	$(CC) $(CFLAGS) -o $@ $^
