@@ -1,8 +1,8 @@
-# $Id: Makefile,v 1.11 2001/10/08 12:21:45 drt Exp $
+# $Id: Makefile,v 1.12 2001/10/08 12:50:21 drt Exp $
 
-PROGS =  didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
+PROGS = djblib.a didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
 
-CFLAGS = -g -Wall -Idjblib -Ilibtai
+CFLAGS = -g -Wall -Idjblib
 
 all: $(PROGS) 
 
@@ -11,7 +11,7 @@ init-linux-chroot.o rijndael.o base64-encode.o pad.o txtparse.o scan_xlong.o sca
 djblib.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
-didentd-name: didentd.o get_info4_linux.o  get_info6_linux.o didentd-genanswer-name.o \
+didentd-name: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-name.o \
 init-linux-chdir.o base64-encode.o scan_xlong.o scan_ushort.o\
 djblib.a
 	$(CC) $(CFLAGS) -o $@ $^
