@@ -1,4 +1,4 @@
-/* $Id: didentd-decrypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $
+/* $Id: didentd-decrypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $
  *  --drt@ailis.de
  *
  * decryptor for encrypted didentd replys 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.5  2000/04/30 02:01:58  drt
+ * key is now taken from the enviroment
+ *
  * Revision 1.4  2000/04/28 12:54:55  drt
  * Cleanup, better integration of libtai and dnscache
  *
@@ -26,6 +29,7 @@
 
 #include "buffer.h"
 #include "caltime.h"
+#include "env.h"
 #include "fmt.h"
 #include "getln.h"
 #include "ip4.h"
@@ -36,10 +40,12 @@
 #include "uint16.h"
 #include "uint32.h"
 
-#include "rijndael.h"
 #include "base64.h"
+#include "pad.h"
+#include "rijndael.h"
+#include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-decrypt.c,v 1.4 2000/04/28 12:54:55 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -54,9 +60,10 @@ uint16 rport = 0;
 int main(int argc, char *argv[])
 {
   int match = 1;
+  char *x;
   char strnum[FMT_ULONG];
   char strip4[IP4_FMT];
-  char *key = KEY;
+  stralloc key = {0};
   stralloc out = {0};
   struct tai t;
   struct passwd *pw;
@@ -73,8 +80,19 @@ int main(int argc, char *argv[])
       strerr_die2x(111, FATAL, "unable to init leapsecs");
     }
 
+  /* get key from enviroment */
+  x = env_get("KEY");
+  if (!x)
+    {
+      strerr_die2x(111, FATAL, "$KEY not set");
+    }
+
+  stralloc_copys(&key, x);
+  txtparse(&key);
+  pad(&key, 16);
+
   /* initialize rijndael */
-  rijndaelKeySched(6, 4, key);
+  rijndaelKeySched(6, 4, key.s);
 
   while(match)
     {

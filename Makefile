@@ -1,8 +1,4 @@
-# $Id: Makefile,v 1.6 2000/04/28 13:03:05 drt Exp $
-
-# Define this as your key. 
-# It must be exactly 16 bytes long
-KEY = \"1234567890123456\"
+# $Id: Makefile,v 1.7 2000/04/30 02:01:58 drt Exp $
 
 DOWNLOADER=wget
 
@@ -13,7 +9,7 @@ CFLAGS = -g -Wall -Idnscache -Ilibtai
 all: libtai.a dnscache.a $(PROGS) 
 
 didentd: didentd.o rijndael.o didentd-genanswer-crypt.o \
-base64-encode.o scan_xlong.o scan_ushort.o\
+base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
@@ -27,7 +23,8 @@ base64-encode.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-didentd-decrypt: didentd-decrypt.o rijndael.o base64-decode.o \
+didentd-decrypt: didentd-decrypt.o \
+rijndael.o base64-decode.o pad.o txtparse.o \
 buffer_0.o dnscache.a libtai.a 
 	$(CC) $(CFLAGS) -o $@ $^
 
@@ -36,12 +33,6 @@ didentd-conf: didentd-conf.c dnscache.a
 
 didentd-name-conf: didentd-name-conf.c dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^ 
-
-didentd-genanswer-crypt.o: didentd-genanswer-crypt.c
-	$(CC) $(CFLAGS) -DKEY=$(KEY) -c $^
-
-didentd-decrypt.o: didentd-decrypt.c 
-	$(CC) $(CFLAGS) -DKEY=$(KEY) -c $^
 
 install: $(PROGS)
 	install -m 755 -s didentd didentd-name didentd-static /usr/local/bin

@@ -1,4 +1,4 @@
-/* $Id: didentd-conf.c,v 1.3 2000/04/28 12:54:55 drt Exp $
+/* $Id: didentd-conf.c,v 1.4 2000/04/30 02:01:58 drt Exp $
  *  --drt@ailis.de
  *
  * create directory structure for using didentd with svscan
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-conf.c,v $
+ * Revision 1.4  2000/04/30 02:01:58  drt
+ * key is now taken from the enviroment
+ *
  * Revision 1.3  2000/04/28 12:54:55  drt
  * Cleanup, better integration of libtai and dnscache
  *
@@ -26,7 +29,7 @@
 #include "generic-conf.h"
 #include "strerr.h"
 
-static char rcsid[] = "$Id: didentd-conf.c,v 1.3 2000/04/28 12:54:55 drt Exp $";
+static char rcsid[] = "$Id: didentd-conf.c,v 1.4 2000/04/30 02:01:58 drt Exp $";
 
 #define FATAL "didentd-conf: fatal: "
 
@@ -63,13 +66,14 @@ int main(int argc, char **argv)
   start("run");
   outs("#!/bin/sh\nexec 2>&1\n");
   outs("IP="); outs(myip); outs("; export IP\n");
+  outs("KEY=\"changemenow\\001\\002\\003\"; export KEY\n");
   outs("exec envuidgid "); outs(user);
   outs(" \\\nsoftlimit -d250000");
   outs(" \\\ntcpserver -RPHv $IP ident");
   outs(" "); outs(auto_home); outs("/bin/didentd");
   outs("\n");
   finish();
-  perm(0755);
+  perm(0700);
 
   return 0;
 }
