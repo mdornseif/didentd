@@ -1,4 +1,4 @@
-/* $Id: didentd.c,v 1.8 2001/10/14 06:03:10 drt Exp $
+/* $Id: didentd.c,v 1.9 2001/10/15 00:27:22 drt Exp $
  *  --drt@un.bewaff.net - http://c0re.jp/c0de/didentd/
  *
  * core for an ident server 
@@ -14,7 +14,7 @@
 #include "fmt.h"
 #include "getln.h"
 #include "ip4.h"
-#include "ip6.h
+#include "ip6.h"
 #include "scan.h"
 #include "str.h"
 #include "stralloc.h"
@@ -23,7 +23,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.8 2001/10/14 06:03:10 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.9 2001/10/15 00:27:22 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -148,7 +148,10 @@ int main()
 	      stralloc_cats(&answer, " , ");
 	      stralloc_catb(&answer, strnum, fmt_ulong(strnum, rport));
 	      
-	      problem = generate_answer(&answer, uid, lip, lport, rip, rport);
+	      if(uid != 0xffffffff)
+		problem = generate_answer(&answer, uid, lip, lport, rip, rport);
+	      else
+		generate_answer(&answer, uid, lip, lport, rip, rport);
 	      
 	      buffer_puts(buffer_1, answer.s);
 	      buffer_flush(buffer_1);
@@ -156,13 +159,13 @@ int main()
     }
 
   /* Do logging */
-  buffer_puts(buffer_2, remoteip);  
-  buffer_puts(buffer_2, ":");
-  buffer_puts(buffer_2, remoteport);
-  buffer_puts(buffer_2, " -> ");
   buffer_puts(buffer_2, localip);  
   buffer_puts(buffer_2, ":");
-  buffer_puts(buffer_2, localport);
+  buffer_put(buffer_2, strnum, fmt_ulong(strnum, lport));
+  buffer_puts(buffer_2, " -> ");
+  buffer_puts(buffer_2, remoteip);  
+  buffer_puts(buffer_2, ":");
+  buffer_put(buffer_2, strnum, fmt_ulong(strnum, rport));
   buffer_puts(buffer_2, " [");
   buffer_puts(buffer_2, problem);
   buffer_puts(buffer_2, "] ");
@@ -170,10 +173,6 @@ int main()
       buffer_put(buffer_2, strnum, fmt_ulong(strnum,uid));
   else
        buffer_puts(buffer_2, "unknown");  
-  buffer_puts(buffer_2, " ");
-  buffer_put(buffer_2, strnum, fmt_ulong(strnum,lport));
-  buffer_puts(buffer_2, " , ");
-  buffer_put(buffer_2, strnum, fmt_ulong(strnum,rport));
   buffer_puts(buffer_2, "\n");
   buffer_flush(buffer_2);
 
