@@ -1,4 +1,4 @@
-/* $Id: didentd-decrypt.c,v 1.6 2000/05/09 06:34:29 drt Exp $
+/* $Id: didentd-decrypt.c,v 1.7 2000/05/09 06:47:34 drt Exp $
  *  --drt@ailis.de
  *
  * decryptor for encrypted didentd replys 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.7  2000/05/09 06:47:34  drt
+ * libtai removed
+ *
  * Revision 1.6  2000/05/09 06:34:29  drt
  * Changed dataformat for IPv6 support
  *
@@ -38,7 +41,6 @@
 #include "getln.h"
 #include "ip4.h"
 #include "ip6.h"
-#include "leapsecs.h"
 #include "stralloc.h"
 #include "strerr.h"
 #include "tai.h"
@@ -50,7 +52,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-decrypt.c,v 1.6 2000/05/09 06:34:29 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.7 2000/05/09 06:47:34 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -78,9 +80,6 @@ int main(int argc, char *argv[])
   uint16 lport = 0;
   uint16 rport = 0;
   time_t time;
-
-  if (leapsecs_init() == -1) 
-      strerr_die2x(111, FATAL, "unable to init leapsecs");
 
   /* get key from enviroment */
   x = env_get("KEY");
