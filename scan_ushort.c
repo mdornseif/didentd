@@ -1,8 +1,11 @@
-/* $id$
+/* $Id: scan_ushort.c,v 1.4 2001/10/11 15:23:54 drt Exp $
  *
  * 000410 drt@un.bewaff.net with bold inspiration from DJBs stuff
  *
  * $Log: scan_ushort.c,v $
+ * Revision 1.4  2001/10/11 15:23:54  drt
+ * fixed cvs typo
+ *
  * Revision 1.3  2001/10/08 12:51:22  drt
  * uodated emailaddress
  *
