@@ -41,6 +41,7 @@ install: $(PROGS)
 	install -m 755 -s didentd-conf /usr/local/bin
 	install -m 755 -s didentd-name /usr/local/bin
 	install -m 755 -s didentd-name-conf /usr/local/bin
+	install -m 755 -s didentd-static /usr/local/bin
 	install -m 755 -s didentd-decrypt /usr/local/bin
 	install -m 755 -s leapsecs /usr/local/bin
 	install -m 755 leapsecs.dat /etc

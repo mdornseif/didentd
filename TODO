@@ -7,3 +7,5 @@
 * check if we should use timeouts while writing
 * add ipv6 support
 * clean use of dans stuff
+* add didentd-static-conf
+* fix problem with base64 encoding
