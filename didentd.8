@@ -1,6 +1,6 @@
-.TH leapsecs 3
+.TH didentd
 .SH NAME
-leapsecs \- handle UTC leap seconds
+didentd \- ident server handing out encrypted audit tokens
 .SH SYNTAX
 .B #include <leapsecs.h>
 
@@ -16,7 +16,36 @@ struct tai \fIt\fR;
 .br
 int \fIhit\fR;
 .SH DESCRIPTION
-.B leapsecs_sub
+.B didentd 
+is a RfC 1413 ident server. It should be called by e ucspi-tcp server 
+listening on port 113
+for tcp connections.
+.B didentd
+reads a set of portnumbers from stdin and tries to
+find out which user owns the tcp connection identified by  
+the pair of ports, by the ip adress of the ident server and 
+by the adress which sent the ident requests. This is done by scanning 
+.IR /proc/net/tcp .
+
+.B bidentd 
+then creates an audit token consisting of the local and remote 
+ip adresses and ports, a time_t timestamp and the uid  
+owning the connection and encrypts this using rijndael. 
+The encryption key is taken from the enviroment variable 
+.IR $KEY . 
+The result is base64 encoded and sent to the requesting 
+party as type 
+.IR OTHER .
+
+.B didentd logs the connection to stderr. 
+
+.I $KEY
+can be any string up to 32 bytes. If 
+.I $KEY
+is shorter than 32 bytes it bil be reparted until 32 bytes.
+.I $KEY
+can contain 
+
 changes a seconds-since-epoch count
 into a non-leap-seconds-since-epoch count.
 It interprets
