@@ -1,20 +1,26 @@
-/* $Id
+/* $Id: base64-encode.c,v 1.3 2000/04/25 22:32:22 drt Exp $
  * 
  * Found somewere on the internet stating:
  */
 
 /* arbitrary data on stdin -> BASE64 data on stdout
  * UNIX's newline convention is used, i.e. one ASCII control-j (10 decimal).
+ * 
+ * public domain 
  */
-/* public domain */
 
 /* Hacked by drt@ailis.de to be a library function working on memory blocks
  *
  * $Log: base64-encode.c,v $
+ * Revision 1.3  2000/04/25 22:32:22  drt
+ * Code Cleanups
+ *
  * Revision 1.2  2000/04/19 13:39:17  drt
  * Changes for didentd
  *
  */ 
+
+static char rcsid[] = "$Id: base64-encode.c,v 1.3 2000/04/25 22:32:22 drt Exp $"; 
 
 static unsigned char alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

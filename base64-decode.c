@@ -1,25 +1,30 @@
-/* $Id
+/* $Id: base64-decode.c,v 1.3 2000/04/25 22:32:22 drt Exp $
  * 
  * Found somewere on the internet stating:
  */
 
-/* public domain */
-/* BASE64 on stdin -> converted data on stdout */
+/* public domain 
+ * BASE64 on stdin -> converted data on stdout */
 
 /* Hacked by drt@ailis.de to be a library function working on memory blocks
  *
  * $Log: base64-decode.c,v $
+ * Revision 1.3  2000/04/25 22:32:22  drt
+ * Code Cleanups
+ *
  * Revision 1.2  2000/04/20 15:05:07  drt
  * Changed for use with didentd
  *
  */ 
+
+static char rcsid[] = "$Id: base64-decode.c,v 1.3 2000/04/25 22:32:22 drt Exp $";
 
 unsigned char alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 int base64decode(char *dest, char *src, int l)
 {
     static char inalphabet[256], decoder[256];
-    int i, bits, c, char_count, errors = 0;
+    int i, bits, c, char_count;
     int rpos;
     int wpos = 0;
 

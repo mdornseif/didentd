@@ -1,4 +1,5 @@
-/* dident-conf.c by drt@ailis.de
+/* $Id: didentd-conf.c,v 1.2 2000/04/25 22:32:22 drt Exp $
+ *
  * - create directory structure for using didentd with svscan
  * 
  * You might find more info at http://rc23.cx/
@@ -6,8 +7,11 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-conf.c,v $
- * Revision 1.1  2000/04/12 16:07:20  drt
- * Initial revision
+ * Revision 1.2  2000/04/25 22:32:22  drt
+ * Code Cleanups
+ *
+ * Revision 1.1.1.1  2000/04/12 16:07:20  drt
+ * initial revision
  *
  */
 
@@ -17,7 +21,7 @@
 #include "djb/auto_home.h"
 #include "djb/generic-conf.h"
 
-static char *rcsid="$Id: didentd-conf.c,v 1.1 2000/04/12 16:07:20 drt Exp $";
+static char *rcsid="$Id: didentd-conf.c,v 1.2 2000/04/25 22:32:22 drt Exp $";
 
 #define FATAL "didentd-conf: fatal: "
 
