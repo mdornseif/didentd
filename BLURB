@@ -1,0 +1,21 @@
+didentd is a RfC1423 (identd) server for Linux written with security
+in mind. It is designed to run with Dan Bernsteins daemontools and
+uscpi-tcp. You can get this tools at http://cr.yp.to/.
+
+The Server runs chrooted under /proc/net on an unprivileged id. 
+
+There is didentd-name which returns the username of the uid owning the
+requested connection. This is the classican ident approach.
+
+There is didentd which does not send an username but an encrypted
+audit token to the client. This token contains all information about
+the requested connection: 
+* userid owning the connection 
+* source ip:port 
+* destination ip:port 
+* a timestamp
+
+If a remote admin has a complain about something from your machine he
+can send this audit token back to you, you can pipe it through
+didentd-decrypt and find out which user did the connection.
+didentd-decrypt outputs all information from the audit token.
