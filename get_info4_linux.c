@@ -1,13 +1,21 @@
-/* $Id: get_info4_linux.c,v 1.2 2001/10/08 12:51:21 drt Exp $
- *  --drt@un.bewaff.net
+/* $Id: get_info4_linux.c,v 1.3 2001/10/09 09:02:26 drt Exp $
+ *  --drt@un.bewaff.net 
  *
  * get info on an ipv4 connection on linux
  * 
- * You might find more info at http://rc23.cx/
+ * You might find more info at http://c0re.jp/c0de/didentd/
  *
  * I do not belive there is something like copyright. 
  *
+ * try
+ * gcc get_info4_linux.c -DUNITTEST -g -Idjblib djblib.a scan_xlong.c -o get_info4_linux.test
+ * ./get_info4_linux.test
+ * for a simple test.
+ *
  * $Log: get_info4_linux.c,v $
+ * Revision 1.3  2001/10/09 09:02:26  drt
+ * Added unittests and more robust parsing
+ *
  * Revision 1.2  2001/10/08 12:51:21  drt
  * uodated emailaddress
  *
@@ -35,9 +43,13 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: get_info4_linux.c,v 1.2 2001/10/08 12:51:21 drt Exp $";
+static char rcsid[] = "$Id: get_info4_linux.c,v 1.3 2001/10/09 09:02:26 drt Exp $";
 
-#define NETINFOFILE4 "tcp"
+#ifdef UNITTEST
+#define NETINFOFILE "test/tcp4-linux"
+#else
+#define NETINFOFILE "tcp"
+#endif
 #define FATAL "didentd: fatal: "
 
 static long int fromhex(unsigned char c) 
@@ -57,9 +69,7 @@ static long int fromhex(unsigned char c)
 /* returns the uid asociated with the IPv4 connection defined by 
    lip, rip, lport, rport or 0xffffffff if unsucessfull 
 
-   This is linux specific bound to the proc-filesystem. If somebody
-   provides me with Documentation on how to to get connection
-   Information on other Unices please contact me.
+   This is linux specific bound to the proc-filesystem.
  */
 
 uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
@@ -68,17 +78,18 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
   int fd = 0;
   uint32 uid = 0xffffffff;   // that's our default for "not found"
   uint32 kernlport, kernrport;
-  char  kernlip[4];
-  char  kernrip[4];
+  char kernlip[4];
+  char kernrip[4];
   char bspace[1024];
+  char *c;
   buffer b;
   stralloc line = {0};
   int i;
   
-  fd = open_read(NETINFOFILE4);
+  fd = open_read(NETINFOFILE);
   if (fd == -1)
       /* If opening failed quit */
-      strerr_die3sys(111, FATAL, NETINFOFILE4, ": ");
+      strerr_die3sys(111, FATAL, NETINFOFILE, ": ");
   
   buffer_init(&b, read, fd, bspace, sizeof bspace);
   
@@ -86,15 +97,15 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
     {
       if (getln(&b, &line, &match, '\n') == -1)
 	strerr_die2sys(111, FATAL, "unable to read line: ");
-      
-      /* example line:
-	 sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode       
-	 0: B09C9B3E:0AF1 B5B2C183:0015 08 00000000:00000001 00:00000000 00000000  1000        0 122140        
-	 1: 00000000:0071 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 120494   
+      stralloc_0(&line);
 
-          5 7        14   21       30                                                 81         92
-      */
-      
+      /* example line:
+  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode	 
+   0: B09C9B3E:0AF1 B5B2C183:0015 08 00000000:00000001 00:00000000 00000000  1000        0 122140
+   1: 00000000:0071 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 120494   
+    4 6        15   20       29   34
+       */
+
       if((line.s[4] == ':') 
 	 && (line.len > 80))
 	{
@@ -102,8 +113,12 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
 	     || (line.s[19] !=  ' ') 
 	     || (line.s[28] !=  ':') 
 	     || (line.s[76] !=  ' '))
-	    strerr_die3x(111, FATAL, "can't parse file ", NETINFOFILE4);
+	    strerr_die5x(111, FATAL, "can't parse file ", NETINFOFILE, ": ", line.s);
 	  
+	  /* check for connections not beeing in state 1 (ESTABLISHED) */
+	  if((line.s[34] != '0') || (line.s[35] != '1'))
+	    continue;
+	
 	  scan_xlong(&line.s[15], &kernlport); 
 	  scan_xlong(&line.s[29], &kernrport); 
 	  
@@ -119,7 +134,9 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
 	     && byte_equal(kernrip, 4, rip) 
 	     && byte_equal(kernlip, 4, lip))
 	    {
-	      scan_ulong(&line.s[77], &uid); 
+	      for(c = &line.s[77]; *c == ' '; c++)
+		;
+	      scan_ulong(c, &uid); 
 	      break;
 	    }
 	}
@@ -128,3 +145,30 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
   
   return uid;
 }
+
+#ifdef UNITTEST
+
+#include <stdio.h>
+
+int main()
+{
+
+  uint32 r1, r2, r3;
+
+  r1 = get_connection_info4("\177\000\000\001", 0x1000, "\177\000\000\001", 0x2000);
+  r2 = get_connection_info4("\177\000\000\001", 0x1000, "\177\000\000\002", 0x2000);
+  r3 = get_connection_info4("\177\000\000\001", 0x2000, "\177\000\000\002", 0x1000);
+
+  if((r1 != 1) || (r2 != 2) || (r3 != 3))
+    {
+      puts("error");
+      return 1;
+    }
+  else
+    {
+      puts("OK");
+      return 0;
+    }
+}
+
+#endif
