@@ -1,5 +1,5 @@
-/* $Id: didentd-decrypt.c,v 1.7 2000/05/09 06:47:34 drt Exp $
- *  --drt@ailis.de
+/* $Id: didentd-decrypt.c,v 1.8 2001/10/08 12:50:49 drt Exp $
+ *  --drt@un.bewaff.net
  *
  * decryptor for encrypted didentd replys 
  * 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.8  2001/10/08 12:50:49  drt
+ * Decodingerror fixed
+ *
  * Revision 1.7  2000/05/09 06:47:34  drt
  * libtai removed
  *
@@ -52,7 +55,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-decrypt.c,v 1.7 2000/05/09 06:47:34 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.8 2001/10/08 12:50:49 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -114,7 +117,7 @@ int main(int argc, char *argv[])
       uint16_unpack(&out.s[6], &rport);
       uint32_unpack(&out.s[8], &time);
       byte_copy(lip, 4, &out.s[12]);
-      byte_copy(lip, 8, &out.s[16]);
+      byte_copy(rip, 8, &out.s[16]);
   
       stralloc_copys(&out, ctime(&time));
       out.len--; /* remove \n */
