@@ -1,3 +1,5 @@
+This is didentd 0.1 - it has problems with IPv6 support.
+
 didentd is a ident server with paranoia in mind. See 
 http://c0re.jp/c0de/didentd for further information.
 
