@@ -1,4 +1,4 @@
-/* $Id: didentd.c,v 1.5 2000/05/09 06:33:47 drt Exp $
+/* $Id: didentd.c,v 1.6 2000/05/10 19:34:44 drt Exp $
  *  --drt@ailis.de
  *
  * core for an ident server 
@@ -8,6 +8,10 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd.c,v $
+ * Revision 1.6  2000/05/10 19:34:44  drt
+ * Further seperated system specific functions
+ * and got didentd-name working again.
+ *
  * Revision 1.5  2000/05/09 06:33:47  drt
  * Finished IPv6 Support
  *
@@ -47,7 +51,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.5 2000/05/09 06:33:47 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.6 2000/05/10 19:34:44 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -63,9 +67,8 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport);
    lip, rip, lport, rport or 0xffffffff if unsucessfull */
 uint32 get_connection_info6(char *lip, uint16 lport, char *rip, uint16 rport);
 
-// where to read the networkinfo
-#define NETINFOFILE6 "tcp6"
-#define CHROOT "/proc/net/"
+/* server specific initialisation */
+extern void didentd_init();
 
 #define stderr  2
 #define stdout  1
@@ -74,15 +77,17 @@ uint32 get_connection_info6(char *lip, uint16 lport, char *rip, uint16 rport);
 
 /* this is based on DJBs droproot */
 
-void droppriv()
+void droppriv(char *dir, int dochroot)
 {
   char *x;
   unsigned long id;
 
-  if (chdir(CHROOT) == -1)
-    strerr_die4sys(111, FATAL, "unable to chdir to ", CHROOT, ": ");
-  if (chroot(".") == -1)
-    strerr_die4sys(111, FATAL, "unable to chroot to ", CHROOT, ": ");
+  if (chdir(dir) == -1)
+    strerr_die4sys(111, FATAL, "unable to chdir to ", dir, ": ");
+
+  if(dochroot)
+    if (chroot(".") == -1)
+      strerr_die4sys(111, FATAL, "unable to chroot to ", dir, ": ");
 
   x = env_get("GID");
   if (!x)
@@ -116,9 +121,7 @@ int main()
   uint16 lport = 0;
   uint16 rport = 0;
 
-  /* chroot() to ROOT and switch to $UID:$GID */
-  droppriv();
-
+  didentd_init();
 
   x = env_get("PROTO");
   if(x)

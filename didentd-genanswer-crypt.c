@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.7 2000/05/09 06:34:36 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.8 2000/05/10 19:34:44 drt Exp $
  *  --drt@ailis.de
  *
  * - generate a RfC 1413 reply containing 
@@ -11,6 +11,10 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.8  2000/05/10 19:34:44  drt
+ * Further seperated system specific functions
+ * and got didentd-name working again.
+ *
  * Revision 1.7  2000/05/09 06:34:36  drt
  * Changed dataformat for IPv6 support
  *
@@ -47,12 +51,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.7 2000/05/09 06:34:36 drt Exp $";
-
-extern uint32 lip;
-extern uint32 rip;
-extern uint16 lport;
-extern uint16 rport;
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.8 2000/05/10 19:34:44 drt Exp $";
 
 /* returns a pointer to a string describing a problem or NULL if
 sucessfull, adds to answer the part after the ports of an RfC 1413

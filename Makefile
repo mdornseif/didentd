@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.9 2000/05/09 06:47:34 drt Exp $
+# $Id: Makefile,v 1.10 2000/05/10 19:34:43 drt Exp $
 
 DOWNLOADER=wget
 
@@ -9,17 +9,17 @@ CFLAGS = -g -Wall -Idnscache
 all: dnscache.a $(PROGS) 
 
 didentd: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-crypt.o \
-rijndael.o base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
+init-linux-chroot.o rijndael.o base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
 didentd-name: didentd.o get_info4_linux.o  get_info6_linux.o didentd-genanswer-name.o \
-base64-encode.o scan_xlong.o scan_ushort.o\
+init-linux-chdir.o base64-encode.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^
 
 didentd-static: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-static.o \
-base64-encode.o scan_xlong.o scan_ushort.o\
+init-linux-chroot.o base64-encode.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^
 
