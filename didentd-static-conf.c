@@ -1,4 +1,4 @@
-/* $Id: didentd-static-conf.c,v 1.1 2001/10/14 05:58:33 drt Exp $
+/* $Id: didentd-static-conf.c,v 1.2 2001/10/15 00:19:46 drt Exp $
  *  --drt@un.bewaff.net - http://c0re.jp/c0de/didentd/
  *
  * create directory structure for using didentd-static with svscan
@@ -6,13 +6,14 @@
  */
 
 #include <pwd.h>
+#include <sys/stat.h> /* mkdir(2) */
 
 #include "auto_home.h"
 #include "exit.h"
 #include "generic-conf.h"
 #include "strerr.h"
 
-static char rcsid[]="$Id: didentd-static-conf.c,v 1.1 2001/10/14 05:58:33 drt Exp $";
+static char rcsid[]="$Id: didentd-static-conf.c,v 1.2 2001/10/15 00:19:46 drt Exp $";
 
 #define FATAL "didentd-static-conf: fatal: "
 
@@ -46,9 +47,13 @@ int main(int argc, char **argv)
   init(dir,FATAL);
   makelog(loguser,pw->pw_uid,pw->pw_gid);
 
+  if (mkdir("root",0700) == -1)
+    strerr_die2sys(111,FATAL,"unable to create directory 'root': ");
+
   start("run");
   outs("#!/bin/sh\nexec 2>&1\n");
   outs("IP="); outs(myip); outs("; export IP\n");
+  outs("ROOT="); outs(dir); outs("/root; export ROOT\n");
   outs("exec envuidgid "); outs(user);
   outs(" \\\nsoftlimit -d250000");
   outs(" \\\ntcpserver -RPHv $IP ident");
