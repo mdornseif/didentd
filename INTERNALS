@@ -7,12 +7,11 @@ means you can run them with inetd and tcp-env or tcpserver. If you use
 tcpserver with IPv6 functionality didentd will be able to answer
 requests via IPv6.
 
-didentd.c contains the main procedure  which should be portable
-between different operating systems, but for now it isn't because the
-call to dropprivs() is Linux speciffic.
-
-It then reads information about the connection from the enviroment
-like described at http://cr.cp.to/... This way it also decides if the
+didentd.c contains the main procedure which should be portable between
+different operating systems. It reads information about the connection
+from the enviroment like described at
+http://cr.yp.to/ucspi-tcp/environment.html and
+http://cr.yp.to/proto/ucspi-tcp.txt This way it also decides if the
 client is calling via IPv4 or IPv6. didentd* reads the query from the
 client into a 16 byte buffer using a 60 second timeout.
 
@@ -22,13 +21,13 @@ get_connection_info(4|6)(localip, localport, remoteip, remoteport);
 
 This functions reside in different files and are operating system
 specific. At the moment there is ony support for Linux /proc filesystem. 
-The idea is that you just have to link an different File containing
+The idea is that you just have to link an different file containing
 get_connection_info() to support an other OS.
 
-get_connection_info() opens tcp (or tcp6) and scans line for line
-comparing information with the Information about the requested
-connection. This yields a Problem described in the nmap manpage
-documenting the "-I" option:
+get_connection_info() on linux 1opens tcp (or tcp6) and scans the file
+line for line comparing information with the Information about the
+requested connection. This yields a problem described in the nmap
+manpage documenting the "-I" option:
 
 -I  This turns on TCP reverse ident scanning. As noted by Dave
     Goldsmith in a 1996 Bugtraq post, the ident protocol (rfc 1413)
@@ -62,6 +61,17 @@ get_connection_info() returns the uid of the connection owner or
 0xffffffff on an error condition / not found error.
 
 32 bit unsigned int values are used for the uid to accomodate the
-future switch to bigger uids in Linux.
+future switch to bigger uids in some Unices.
 
-generate_answer() is called then to 
+generate_answer() is called then to generate an answer string from
+this Information. didentd-genanswer-crypt.c, didentd-genanswer-name.c
+and didentd-genanswer-static.c contain different implementations of
+generate_answer(). didentd-genanswer-crypt.c returns an encrypted
+audit token, didentd-genanswer-name.c returns the username of the user
+owning the connection and didentd-genanswer-static.c always retunrs an
+answer with 'nope' as an username.
+
+The Information gathered by generate_answer() is send back to the
+client and logging to sttderr is done.
+
+  --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 

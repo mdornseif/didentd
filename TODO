@@ -1,10 +1,10 @@
-* code cleanup
-* check if we should use timeouts while writing
 * overview of used crypto - what's about known plaintext attacks?
 * write manpages
 * add didentd-static-conf
-* add test programm
-* check all return values of ALL function calls
 * use http://www.fefe.de/djb/
-* find a way to put IPv6 into ident tokens
-* libtai removal
+* improve didentd-test programm
+* make the response of didentd-static configurable
+* anti reverse ident techniques
+* expand INTERNALS
+
+ --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 

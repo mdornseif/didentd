@@ -1,34 +1,19 @@
 This is experimental stuff. Basically it works like dffingerd.
 
-Quick'd dirty:
+FOR THE IMPATIENT:
 
-This is proof of concept code.
+You need tcpserver and daemontools.
 
-You need tcpserver and daemontools
-
-To bulid:
-
-Get dnscache from http://cr.yp.to/, extract it, compile it.
-Copy all files form the dnscache directory to djb/
-
-Change KEY in Makefile to any 16 byte string you like.
-
-# make
+# make install
 create two users: identd and identdl
-# /usr/local/bin/dident-conf identd identdl /etc/identd 127.0.0.1
-# ln -s /etc/identd /service/
+# mkdir /var/service
+# /usr/local/bin/dident-conf identd identdl /var/service/identd 0.0.0.0
+# ln -s /var/service/identd /service/
 
 
 INSTALLING 
 
-Get dnscache from http://cr.yp.to/, extract it, compile it.
-Copy all files form the dnscache directory to djb/
-
-Edit Makefile to contain your key for creating audit tokens. It has to
-be exactly 16 bytes long and should be kept secret. But beware, the
-binarys contain the keys, this will change in a further version.
-
-Compile and install didentd:
+Untar, compile and install didentd as root:
 
   	# make install
 
@@ -39,30 +24,30 @@ didentd-name-conf and leapsecs in /usr/local/bin and leapsecs.dat in
 Now create two users one for running didentd and one for logging. I
 will use "identd" and "identdl".
 
-Decide where to put didentd data. I will use "/etc/identd". Then
-run didentd-conf:
+Decide where to put didentd data. This example will use
+"/var/service/identd". Then run didentd-conf:
 
-	# didentd-conf identd identdl /etc/identd 0.0.0.0
+	# didentd-conf identd identdl /var/service/identd 0.0.0.0
 
 You can replace 0.0.0.0 by the IP adress didentd should bind to.
-0.0.0.0 will bind it to all your IP adresses
+0.0.0.0 will bind it to all your IP adresses.
 
 Now you can start didentd by telling svscan about it:
 
-	# ln -s /etc/identd /service/
+	# ln -s /var/service/identd /service/
 
 svscan should start didentd within the next five seconds and didend
 will start handing out audit tokens to ident requests. The audit
 tokens contain a userid, source and destination ip and port and a
-tai64 timestamp in encrypted form.
+tai64 timestamp in encrypted form. 
 
 This audit token can be decrypted again by piping it through
 didentd-decrypt.
 
 If you do not want to hand out encrypted audit tokens but usernames
 instead you might use didentd-name and didentd-name-conf which act
-exactly like their counterpart ut send usernames. But don't do that,
-respect the privacy of your users.
+exactly like their counterpart but send usernames. Don't do that,
+respect the privacy of your users. If you would like to send a static
+reply use didentd-static and didentd-static-conf.
 
-
-
+  --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 

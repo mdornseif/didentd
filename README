@@ -1,7 +1,13 @@
+didentd is a ident server with paranoia in mind. See 
+http://c0re.jp/c0de/didentd for further information.
+
 Have a look at WHY-TAP for a discussion why you should run an ident
 server TAP/auth/ident are names for variants of the same protocol.
 See WHY-ENCRYPT for a discussion of why you should use encrypted ident
 replys. The second part of WHY-ENCRYPT discusses the implementation of
 encrypted identd replys in pidentd which uses a different
-implementation than I do.
+strategy than I do.
 
+See INSTALL for help on installing his.
+
+ --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 
