@@ -1,4 +1,5 @@
-/* 
+/*  $Id: scan_xlong.c,v 1.2 2000/04/28 13:03:05 drt Exp $
+
      from djblib 0.16                                                                                    
      
      20000331                                                                                            
@@ -6,14 +7,15 @@
      SuperScript Technology, Inc.  
      
      $Log: scan_xlong.c,v $
-     Revision 1.1  2000/04/12 16:07:11  drt
-     Initial revision
+     Revision 1.2  2000/04/28 13:03:05  drt
+     Compile fixes
 
-     
-     $Id: scan_xlong.c,v 1.1 2000/04/12 16:07:11 drt Exp $
+     Revision 1.1.1.1  2000/04/12 16:07:11  drt
 */
 
-#include "djb/scan.h"
+#include "scan.h"
+
+static char rcsid[] = "$Id: scan_xlong.c,v 1.2 2000/04/28 13:03:05 drt Exp $";
 
 unsigned int scan_xlong(char *s,unsigned long *u)
 {

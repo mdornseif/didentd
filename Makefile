@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 2000/04/28 12:54:55 drt Exp $
+# $Id: Makefile,v 1.6 2000/04/28 13:03:05 drt Exp $
 
 # Define this as your key. 
 # It must be exactly 16 bytes long
@@ -6,11 +6,11 @@ KEY = \"1234567890123456\"
 
 DOWNLOADER=wget
 
-PROGS = didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
+PROGS =  didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
 
 CFLAGS = -g -Wall -Idnscache -Ilibtai
 
-all: $(PROGS) 
+all: libtai.a dnscache.a $(PROGS) 
 
 didentd: didentd.o rijndael.o didentd-genanswer-crypt.o \
 base64-encode.o scan_xlong.o scan_ushort.o\
