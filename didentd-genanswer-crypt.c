@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.11 2001/10/12 12:29:54 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.12 2001/10/14 05:59:58 drt Exp $
  *  --drt@un.bewaff.net
  *
  * - generate a RfC 1413 reply containing 
@@ -25,17 +25,16 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.11 2001/10/12 12:29:54 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.12 2001/10/14 05:59:58 drt Exp $";
 
 /* returns a pointer to a string describing a problem or NULL if
 sucessfull, adds to answer the part after the ports of an RfC 1413
 reply */
 
-static char ok[] = "ok";
-
 char *generate_answer(stralloc *answer, uint32 uid, 
 		      char *lip, uint16 lport, char *rip, uint16 rport)
 {
+  char *problem = "ok";
   char *x;
   char buf[5];
   stralloc out = {0};
@@ -45,8 +44,12 @@ char *generate_answer(stralloc *answer, uint32 uid,
   /* get key from enviroment */
   x = env_get("KEY");
   if (!x)
-      strerr_die2x(111, "didentd fatal: ", "$KEY not set");
-
+    {
+      problem = "$KEY not set";
+      strerr_warn1("didentd warning: $KEY not set using 'snakeoilkey'", NULL);
+      x = "snakeoilkey";
+    }
+  
   /* initialize rijndael with $KEY */
   stralloc_copys(&key, x);
   txtparse(&key);
@@ -73,6 +76,6 @@ char *generate_answer(stralloc *answer, uint32 uid,
   stralloc_cats(answer, "\r\n");
   stralloc_0(answer);
   
-  return ok;
+  return problem;
 }
 
