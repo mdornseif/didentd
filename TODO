@@ -1,10 +1,14 @@
 * overview of used crypto - what's about known plaintext attacks?
 * write manpages
 * add didentd-static-conf
-* use http://www.fefe.de/djb/
+* find a way to put IPv6 into ident tokens
+* return ERROR response if an error returns
 * improve didentd-test programm
 * make the response of didentd-static configurable
 * anti reverse ident techniques
 * expand INTERNALS
+* fix warnings
+* remove gmake dependencies
+* look into endianess-issues
 
  --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 

@@ -1,10 +1,10 @@
-+# Don't edit Makefile! Use conf-* for configuration.
+# Don't edit Makefile! Use conf-* for configuration.
 
 SHELL=/bin/sh
 
 default: compile alloc.a byte.a env.a libtai.a buffer.a cdb.a \
 getopt.a unix.a prot.o timeoutread.o timeoutwrite.o iopause.o \
-auto_home.o generic-conf.o
+auto_home.o generic-conf.o droproot.o
 
 alloc.a: \
 makelib alloc.o alloc_re.o getln.o getln2.o stralloc_cat.o \
