@@ -1,4 +1,4 @@
-/* $Id: get_info4_linux.c,v 1.3 2001/10/09 09:02:26 drt Exp $
+/* $Id: get_info4_linux.c,v 1.4 2001/10/11 15:25:28 drt Exp $
  *  --drt@un.bewaff.net 
  *
  * get info on an ipv4 connection on linux
@@ -12,16 +12,6 @@
  * ./get_info4_linux.test
  * for a simple test.
  *
- * $Log: get_info4_linux.c,v $
- * Revision 1.3  2001/10/09 09:02:26  drt
- * Added unittests and more robust parsing
- *
- * Revision 1.2  2001/10/08 12:51:21  drt
- * uodated emailaddress
- *
- * Revision 1.1  2000/05/08 14:26:04  drt
- * IPv6 support, first try
- *
  */
 
 #include <unistd.h>              /* for close */
@@ -29,21 +19,15 @@
 
 #include "buffer.h"
 #include "byte.h"
-#include "env.h"
-#include "fmt.h"
 #include "getln.h"
-#include "ip4.h"
 #include "open.h"
-#include "prot.h"
 #include "scan.h"
-#include "str.h"
 #include "stralloc.h"
 #include "strerr.h"
-#include "timeoutread.h"
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: get_info4_linux.c,v 1.3 2001/10/09 09:02:26 drt Exp $";
+static char rcsid[] = "$Id: get_info4_linux.c,v 1.4 2001/10/11 15:25:28 drt Exp $";
 
 #ifdef UNITTEST
 #define NETINFOFILE "test/tcp4-linux"
@@ -100,10 +84,14 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
       stralloc_0(&line);
 
       /* example line:
+  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode                               
+   0: 2471DDD5:0050 942402D4:280A 01 0000D8B8:00000000 01:00000031 00000000 65534        0 155250592     
+   1: 2471DDD5:0019 D2566ACF:0AF1 06 00000000:00000000 04:F754DEC0 00000000     0        0 0           
+   2: 2471DDD5:0050 942402D4:2808 01 0000D8B8:00000000 01:0000001A 00000000 65534        0 155250685 
   sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode	 
    0: B09C9B3E:0AF1 B5B2C183:0015 08 00000000:00000001 00:00000000 00000000  1000        0 122140
    1: 00000000:0071 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 120494   
-    4 6        15   20       29   34
+    4 6        15   20       29   34 36                                     76
        */
 
       if((line.s[4] == ':') 
@@ -112,8 +100,8 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
 	  if((line.s[14] !=  ':') 
 	     || (line.s[19] !=  ' ') 
 	     || (line.s[28] !=  ':') 
-	     || (line.s[76] !=  ' '))
-	    strerr_die5x(111, FATAL, "can't parse file ", NETINFOFILE, ": ", line.s);
+	     || (line.s[75] !=  ' '))
+	    strerr_die5x(111, FATAL, "can't parse file ", NETINFOFILE, ":", &line.s[76]);
 	  
 	  /* check for connections not beeing in state 1 (ESTABLISHED) */
 	  if((line.s[34] != '0') || (line.s[35] != '1'))
