@@ -1,5 +1,5 @@
-/* $Id: get_info4_linux.c,v 1.1 2000/05/08 14:26:04 drt Exp $
- *  --drt@ailis.de
+/* $Id: get_info4_linux.c,v 1.2 2001/10/08 12:51:21 drt Exp $
+ *  --drt@un.bewaff.net
  *
  * get info on an ipv4 connection on linux
  * 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: get_info4_linux.c,v $
+ * Revision 1.2  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.1  2000/05/08 14:26:04  drt
  * IPv6 support, first try
  *
@@ -32,7 +35,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: get_info4_linux.c,v 1.1 2000/05/08 14:26:04 drt Exp $";
+static char rcsid[] = "$Id: get_info4_linux.c,v 1.2 2001/10/08 12:51:21 drt Exp $";
 
 #define NETINFOFILE4 "tcp"
 #define FATAL "didentd: fatal: "

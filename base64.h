@@ -1,8 +1,11 @@
 /* $Id
  *
- * drt@ailis.de
+ * drt@un.bewaff.net
  *
  * $Log: base64.h,v $
+ * Revision 1.3  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.2  2000/04/20 15:06:16  drt
  * Added base64 decoding
  *

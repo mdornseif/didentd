@@ -1,5 +1,5 @@
-/* $Id: didentd-name-conf.c,v 1.2 2000/04/28 12:54:56 drt Exp $
- *  --drt@ailis.de
+/* $Id: didentd-name-conf.c,v 1.3 2001/10/08 12:51:21 drt Exp $
+ *  --drt@un.bewaff.net
  *
  * create directory structure for using didentd with svscan
  * 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-name-conf.c,v $
+ * Revision 1.3  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.2  2000/04/28 12:54:56  drt
  * Cleanup, better integration of libtai and dnscache
  *
@@ -23,7 +26,7 @@
 #include "generic-conf.h"
 #include "strerr.h"
 
-static char rcsid[]="$Id: didentd-name-conf.c,v 1.2 2000/04/28 12:54:56 drt Exp $";
+static char rcsid[]="$Id: didentd-name-conf.c,v 1.3 2001/10/08 12:51:21 drt Exp $";
 
 #define FATAL "didentd-name-conf: fatal: "
 

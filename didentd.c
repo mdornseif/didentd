@@ -1,5 +1,5 @@
-/* $Id: didentd.c,v 1.6 2000/05/10 19:34:44 drt Exp $
- *  --drt@ailis.de
+/* $Id: didentd.c,v 1.7 2001/10/08 12:51:21 drt Exp $
+ *  --drt@un.bewaff.net
  *
  * core for an ident server 
  * 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd.c,v $
+ * Revision 1.7  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.6  2000/05/10 19:34:44  drt
  * Further seperated system specific functions
  * and got didentd-name working again.
@@ -51,7 +54,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.6 2000/05/10 19:34:44 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.7 2001/10/08 12:51:21 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an

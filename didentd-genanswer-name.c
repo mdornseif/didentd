@@ -1,5 +1,5 @@
-/* $Id: didentd-genanswer-name.c,v 1.3 2000/04/28 12:54:55 drt Exp $
- *  --drt@ailis.de
+/* $Id: didentd-genanswer-name.c,v 1.4 2001/10/08 12:51:21 drt Exp $
+ *  --drt@un.bewaff.net
  * 
  * generate a straightforward RfC 1413 username reply
  * 
@@ -8,6 +8,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-name.c,v $
+ * Revision 1.4  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.3  2000/04/28 12:54:55  drt
  * Cleanup, better integration of libtai and dnscache
  *
@@ -24,7 +27,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-name.c,v 1.3 2000/04/28 12:54:55 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-name.c,v 1.4 2001/10/08 12:51:21 drt Exp $";
 
 /* returns a pointer to a string describing a problem or NULL if
 sucessfull, adds to answer the part after the ports of an RfC 1413

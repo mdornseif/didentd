@@ -1,5 +1,5 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.8 2000/05/10 19:34:44 drt Exp $
- *  --drt@ailis.de
+/* $Id: didentd-genanswer-crypt.c,v 1.9 2001/10/08 12:51:21 drt Exp $
+ *  --drt@un.bewaff.net
  *
  * - generate a RfC 1413 reply containing 
  *   uid of connection localip, localport, 
@@ -11,6 +11,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.9  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.8  2000/05/10 19:34:44  drt
  * Further seperated system specific functions
  * and got didentd-name working again.
@@ -51,7 +54,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.8 2000/05/10 19:34:44 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.9 2001/10/08 12:51:21 drt Exp $";
 
 /* returns a pointer to a string describing a problem or NULL if
 sucessfull, adds to answer the part after the ports of an RfC 1413

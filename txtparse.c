@@ -1,7 +1,10 @@
-/* $Id: txtparse.c,v 1.1 2000/04/30 02:01:58 drt Exp $
- *  --drt@ailis.de
+/* $Id: txtparse.c,v 1.2 2001/10/08 12:51:22 drt Exp $
+ *  --drt@un.bewaff.net
  * 
  * $Log: txtparse.c,v $
+ * Revision 1.2  2001/10/08 12:51:22  drt
+ * uodated emailaddress
+ *
  * Revision 1.1  2000/04/30 02:01:58  drt
  * key is now taken from the enviroment
  *
@@ -9,7 +12,7 @@
 
 #include "stralloc.h"
 
-static char rcsid[] = "$Id: txtparse.c,v 1.1 2000/04/30 02:01:58 drt Exp $";
+static char rcsid[] = "$Id: txtparse.c,v 1.2 2001/10/08 12:51:22 drt Exp $";
 
 /* change encoded octets (\012) to their 'real' values (\n) */
 

@@ -15,11 +15,14 @@
    Full implementation. 
    Endian indifferent.
    
-   adopted for didentd 000410 by drt@ailis.de
+   adopted for didentd 000410 by drt@un.bewaff.net
 
-   $Id: rijndael.c,v 1.2 2000/04/25 22:31:48 drt Exp $
+   $Id: rijndael.c,v 1.3 2001/10/08 12:51:21 drt Exp $
 
    $Log: rijndael.c,v $
+   Revision 1.3  2001/10/08 12:51:21  drt
+   uodated emailaddress
+
    Revision 1.2  2000/04/25 22:31:48  drt
    *** empty log message ***
 
@@ -28,7 +31,7 @@
 
 */
 
-static char rcsid[] = "$Id: rijndael.c,v 1.2 2000/04/25 22:31:48 drt Exp $";
+static char rcsid[] = "$Id: rijndael.c,v 1.3 2001/10/08 12:51:21 drt Exp $";
 
 #define NO_TEST
 #define STATICTABLES

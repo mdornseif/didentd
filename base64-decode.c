@@ -1,4 +1,4 @@
-/* $Id: base64-decode.c,v 1.4 2000/04/25 23:45:12 drt Exp $
+/* $Id: base64-decode.c,v 1.5 2001/10/08 12:51:21 drt Exp $
  * 
  * Found somewere on the internet stating:
  */
@@ -6,9 +6,12 @@
 /* public domain 
  * BASE64 on stdin -> converted data on stdout */
 
-/* Hacked by drt@ailis.de to be a library function working on memory blocks
+/* Hacked by drt@un.bewaff.net to be a library function working on memory blocks
  *
  * $Log: base64-decode.c,v $
+ * Revision 1.5  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.4  2000/04/25 23:45:12  drt
  * signed/unsigned error only popping up on ix86, not PPC
  *
@@ -20,7 +23,7 @@
  *
  */ 
 
-static char rcsid[] = "$Id: base64-decode.c,v 1.4 2000/04/25 23:45:12 drt Exp $";
+static char rcsid[] = "$Id: base64-decode.c,v 1.5 2001/10/08 12:51:21 drt Exp $";
 
 unsigned char alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

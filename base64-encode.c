@@ -1,4 +1,4 @@
-/* $Id: base64-encode.c,v 1.4 2000/04/25 23:29:32 drt Exp $
+/* $Id: base64-encode.c,v 1.5 2001/10/08 12:51:21 drt Exp $
  * 
  * Found somewere on the internet stating:
  */
@@ -9,9 +9,12 @@
  * public domain 
  */
 
-/* Hacked by drt@ailis.de to be a library function working on memory blocks
+/* Hacked by drt@un.bewaff.net to be a library function working on memory blocks
  *
  * $Log: base64-encode.c,v $
+ * Revision 1.5  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
  * Revision 1.4  2000/04/25 23:29:32  drt
  * Error with signed/unsigned wich didn't show up on PPC but on ix86 fixed
  *
@@ -23,7 +26,7 @@
  *
  */ 
 
-static char rcsid[] = "$Id: base64-encode.c,v 1.4 2000/04/25 23:29:32 drt Exp $"; 
+static char rcsid[] = "$Id: base64-encode.c,v 1.5 2001/10/08 12:51:21 drt Exp $"; 
 
 static unsigned char alphabet[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

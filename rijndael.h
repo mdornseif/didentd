@@ -1,12 +1,15 @@
 /* rijndael.h 
  *
- * drt@ailis.de
+ * drt@un.bewaff.net
  *
  * $id$ 
  *
  * $Log: rijndael.h,v $
- * Revision 1.1  2000/04/12 16:07:17  drt
- * Initial revision
+ * Revision 1.2  2001/10/08 12:51:21  drt
+ * uodated emailaddress
+ *
+ * Revision 1.1.1.1  2000/04/12 16:07:17  drt
+ * initial revision
  *
  */
 
