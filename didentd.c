@@ -1,35 +1,7 @@
-/* $Id: didentd.c,v 1.7 2001/10/08 12:51:21 drt Exp $
- *  --drt@un.bewaff.net
+/* $Id: didentd.c,v 1.8 2001/10/14 06:03:10 drt Exp $
+ *  --drt@un.bewaff.net - http://c0re.jp/c0de/didentd/
  *
  * core for an ident server 
- * 
- * You might find more info at http://rc23.cx/
- *
- * I do not belive there is something like copyright. 
- *
- * $Log: didentd.c,v $
- * Revision 1.7  2001/10/08 12:51:21  drt
- * uodated emailaddress
- *
- * Revision 1.6  2000/05/10 19:34:44  drt
- * Further seperated system specific functions
- * and got didentd-name working again.
- *
- * Revision 1.5  2000/05/09 06:33:47  drt
- * Finished IPv6 Support
- *
- * Revision 1.4  2000/05/08 23:07:56  drt
- * Logging of localip:port
- *
- * Revision 1.3  2000/05/08 14:26:04  drt
- * IPv6 support, first try
- *
- * Revision 1.2  2000/04/28 12:54:56  drt
- * Cleanup, better integration of libtai and dnscache
- *
- * Revision 1.1.1.1  2000/04/12 16:07:11  drt
- * initial revision
- *
  */
 
 #include <unistd.h>              /* for close */
@@ -38,14 +10,11 @@
 #include <time.h>                /* time */
 
 #include "buffer.h"
-#include "byte.h"
 #include "env.h"
 #include "fmt.h"
 #include "getln.h"
 #include "ip4.h"
-#include "ip6.h"
-#include "open.h"
-#include "prot.h"
+#include "ip6.h
 #include "scan.h"
 #include "str.h"
 #include "stralloc.h"
@@ -54,7 +23,7 @@
 #include "uint16.h"
 #include "uint32.h"
 
-static char rcsid[] = "$Id: didentd.c,v 1.7 2001/10/08 12:51:21 drt Exp $";
+static char rcsid[] = "$Id: didentd.c,v 1.8 2001/10/14 06:03:10 drt Exp $";
 
 /* returns a pointer to a string describing a problem or "ok" if
 sucessfull, adds to stralloc *answer the part after the ports of an
@@ -77,35 +46,6 @@ extern void didentd_init();
 #define stdout  1
 #define stdin   0
 #define FATAL "didentd: fatal: "
-
-/* this is based on DJBs droproot */
-
-void droppriv(char *dir, int dochroot)
-{
-  char *x;
-  unsigned long id;
-
-  if (chdir(dir) == -1)
-    strerr_die4sys(111, FATAL, "unable to chdir to ", dir, ": ");
-
-  if(dochroot)
-    if (chroot(".") == -1)
-      strerr_die4sys(111, FATAL, "unable to chroot to ", dir, ": ");
-
-  x = env_get("GID");
-  if (!x)
-    strerr_die2x(111, FATAL, "$GID not set");
-  scan_ulong(x,&id);
-  if (prot_gid((int) id) == -1)
-    strerr_die2sys(111, FATAL, "unable to setgid: ");
-
-  x = env_get("UID");
-  if (!x)
-    strerr_die2x(111, FATAL, "$UID not set");
-  scan_ulong(x,&id);
-  if (prot_uid((int) id) == -1)
-    strerr_die2sys(111, FATAL, "unable to setuid: ");
-}
 
 int main()
 {
