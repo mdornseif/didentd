@@ -17,13 +17,18 @@
    
    adopted for didentd 000410 by drt@ailis.de
 
-   $Id: rijndael.c,v 1.1 2000/04/12 16:07:17 drt Exp $
+   $Id: rijndael.c,v 1.2 2000/04/25 22:31:48 drt Exp $
 
    $Log: rijndael.c,v $
-   Revision 1.1  2000/04/12 16:07:17  drt
-   Initial revision
+   Revision 1.2  2000/04/25 22:31:48  drt
+   *** empty log message ***
+
+   Revision 1.1.1.1  2000/04/12 16:07:17  drt
+   initial revision
 
 */
+
+static char rcsid[] = "$Id: rijndael.c,v 1.2 2000/04/25 22:31:48 drt Exp $";
 
 #define NO_TEST
 #define STATICTABLES

@@ -1,4 +1,5 @@
-/* dident-decrypt.c by drt@ailis.de
+/* $Id: didentd-decrypt.c,v 1.3 2000/04/25 22:31:48 drt Exp $
+ *
  * - decryptor for encrypted didentd replys 
  * 
  * You might find more info at http://rc23.cx/
@@ -6,6 +7,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-decrypt.c,v $
+ * Revision 1.3  2000/04/25 22:31:48  drt
+ * *** empty log message ***
+ *
  * Revision 1.2  2000/04/20 15:06:16  drt
  * Added base64 decoding
  *
@@ -30,7 +34,7 @@
 #include "rijndael.h"
 #include "base64.h"
 
-static char *rcsid = "$Id: didentd-decrypt.c,v 1.2 2000/04/20 15:06:16 drt Exp $";
+static char *rcsid = "$Id: didentd-decrypt.c,v 1.3 2000/04/25 22:31:48 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -47,9 +51,7 @@ int main(int argc, char *argv[])
   int match = 1;
   char strnum[FMT_ULONG];
   char strip4[IP4_FMT];
-  char x[4];
   char *key = KEY;
-  int i;
   stralloc out = {0};
   struct tai t;
   struct passwd *pw;
