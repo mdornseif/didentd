@@ -2,7 +2,7 @@
 
 SHELL=/bin/sh
 
-default: compile alloc.a byte.a env.a libtai.a buffer.a cdb.a \
+default: compile alloc.a byte.a env.a libtai.a buffer.a \
 getopt.a unix.a prot.o timeoutread.o timeoutwrite.o iopause.o \
 auto_home.o generic-conf.o droproot.o
 
