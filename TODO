@@ -7,8 +7,10 @@
 * make the response of didentd-static configurable
 * anti reverse ident techniques
 * expand INTERNALS
-* fix warnings
+* fix warning
 * remove gmake dependencies
 * look into endianess-issues
+* droppriv module
+* move uscpi-tcp parsing from didentd.c into a module
 
  --drt@un.bewaff.net - http://c0re.jp/c0rde/didentd/ 
