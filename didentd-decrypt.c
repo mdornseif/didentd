@@ -1,36 +1,11 @@
-/* $Id: didentd-decrypt.c,v 1.8 2001/10/08 12:50:49 drt Exp $
+/* $Id: didentd-decrypt.c,v 1.9 2001/10/11 11:28:26 drt Exp $
  *  --drt@un.bewaff.net
  *
  * decryptor for encrypted didentd replys 
  * 
- * You might find more info at http://rc23.cx/
+ * You might find more info at http://c0re.jp/c0de/didentd/
  *
  * I do not belive there is something like copyright. 
- *
- * $Log: didentd-decrypt.c,v $
- * Revision 1.8  2001/10/08 12:50:49  drt
- * Decodingerror fixed
- *
- * Revision 1.7  2000/05/09 06:47:34  drt
- * libtai removed
- *
- * Revision 1.6  2000/05/09 06:34:29  drt
- * Changed dataformat for IPv6 support
- *
- * Revision 1.5  2000/04/30 02:01:58  drt
- * key is now taken from the enviroment
- *
- * Revision 1.4  2000/04/28 12:54:55  drt
- * Cleanup, better integration of libtai and dnscache
- *
- * Revision 1.3  2000/04/25 22:31:48  drt
- * *** empty log message ***
- *
- * Revision 1.2  2000/04/20 15:06:16  drt
- * Added base64 decoding
- *
- * Revision 1.1.1.1  2000/04/12 16:07:17  drt
- * initial revision
  *
  */
 
@@ -55,7 +30,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-decrypt.c,v 1.8 2001/10/08 12:50:49 drt Exp $";
+static char rcsid[] = "$Id: didentd-decrypt.c,v 1.9 2001/10/11 11:28:26 drt Exp $";
 
 #define stderr 2
 #define stdout 1
@@ -122,7 +97,6 @@ int main(int argc, char *argv[])
       stralloc_copys(&out, ctime(&time));
       out.len--; /* remove \n */
       stralloc_cats(&out, " ");
-      stralloc_0(&out);
 
       buffer_put(buffer_1, out.s, out.len);
       
