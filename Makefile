@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2000/04/30 02:01:58 drt Exp $
+# $Id: Makefile,v 1.8 2000/05/08 14:26:04 drt Exp $
 
 DOWNLOADER=wget
 
@@ -8,17 +8,17 @@ CFLAGS = -g -Wall -Idnscache -Ilibtai
 
 all: libtai.a dnscache.a $(PROGS) 
 
-didentd: didentd.o rijndael.o didentd-genanswer-crypt.o \
-base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
+didentd: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-crypt.o \
+rijndael.o base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
-didentd-name: didentd.o didentd-genanswer-name.o \
+didentd-name: didentd.o get_info4_linux.o  get_info6_linux.o didentd-genanswer-name.o \
 base64-encode.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-didentd-static: didentd.o didentd-genanswer-static.o \
+didentd-static: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-static.o \
 base64-encode.o scan_xlong.o scan_ushort.o\
 dnscache.a
 	$(CC) $(CFLAGS) -o $@ $^
@@ -51,10 +51,14 @@ distclean:
 	-rm -Rf dnscache* libtai*
 
 dnscache.a:
+	if [ ! -f dnscache-1.00-ipv6.diff5 ]; then \
+		$(DOWNLOADER) http://www.fefe.de/dns/dnscache-1.00-ipv6.diff5;\
+	fi
 	if [ ! -d dnscache ]; then \
 		$(DOWNLOADER) http://cr.yp.to/dnscache/dnscache-1.00.tar.gz; \
 		tar xzvf dnscache-1.00.tar.gz; rm dnscache-1.00.tar.gz; \
 		mv dnscache-1.00 dnscache; \
+		cd dnscache; patch < ../dnscache-1.00-ipv6.diff5; \
         fi;	
 	cd dnscache; \
 	make; \

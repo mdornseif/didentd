@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.6 2000/05/08 14:26:04 drt Exp $
  *  --drt@ailis.de
  *
  * - generate a RfC 1413 reply containing 
@@ -11,6 +11,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.6  2000/05/08 14:26:04  drt
+ * IPv6 support, first try
+ *
  * Revision 1.5  2000/04/30 02:01:58  drt
  * key is now taken from the enviroment
  *
@@ -40,7 +43,7 @@
 #include "rijndael.h"
 #include "txtparse.h"
 
-static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.5 2000/04/30 02:01:58 drt Exp $";
+static char rcsid[] = "$Id: didentd-genanswer-crypt.c,v 1.6 2000/05/08 14:26:04 drt Exp $";
 
 #define NULL 0
 
@@ -53,7 +56,8 @@ extern uint16 rport;
 sucessfull, adds to answer the part after the ports of an RfC 1413
 reply */
 
-char *generate_answer(stralloc *answer, uint32 uid)
+char *generate_answer(stralloc *answer, uint32 uid, 
+		      char *lip, uint16 lport, char *rip, uint16 rport)
 {
   char *x;
   char *problem = "ok";
@@ -79,12 +83,10 @@ char *generate_answer(stralloc *answer, uint32 uid)
   stralloc_cats(answer, " : USERID : OTHER : ");
   uint32_pack(buf, uid);
   stralloc_catb(&tmp, buf, 4);
-  uint32_pack(buf, lip);
-  stralloc_catb(&tmp, buf, 4);
+  stralloc_catb(&tmp, lip, 4);
   uint16_pack(buf, lport);
   stralloc_catb(&tmp, buf, 2);
-  uint32_pack(buf, rip);
-  stralloc_catb(&tmp, buf, 4);
+  stralloc_catb(&tmp, rip, 4);
   uint16_pack(buf, rport);
   stralloc_catb(&tmp, buf, 2);
   tai_pack(buf, &now);
