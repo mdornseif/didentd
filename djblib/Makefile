@@ -1,4 +1,4 @@
-# Don't edit Makefile! Use conf-* for configuration.
++# Don't edit Makefile! Use conf-* for configuration.
 
 SHELL=/bin/sh
 
