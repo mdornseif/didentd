@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 2001/10/08 12:50:21 drt Exp $
+# $Id: Makefile,v 1.13 2001/10/11 15:26:12 drt Exp $
 
 PROGS = djblib.a didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
 
@@ -34,6 +34,7 @@ didentd-name-conf: didentd-name-conf.c djblib.a
 
 djblib.a: djblib/*.c djblib/*.h
 	(cd djblib; make; ar cr ../djblib.a *.o)
+	ar d djblib.a auto-str.o
 
 install: $(PROGS)
 	install -m 755 -s didentd didentd-name didentd-static /usr/local/bin
