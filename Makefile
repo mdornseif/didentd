@@ -1,38 +1,39 @@
-# $Id: Makefile,v 1.10 2000/05/10 19:34:43 drt Exp $
-
-DOWNLOADER=wget
+# $Id: Makefile,v 1.11 2001/10/08 12:21:45 drt Exp $
 
 PROGS =  didentd didentd-decrypt didentd-name didentd-static didentd-conf didentd-name-conf
 
-CFLAGS = -g -Wall -Idnscache
+CFLAGS = -g -Wall -Idjblib -Ilibtai
 
-all: dnscache.a $(PROGS) 
+all: $(PROGS) 
 
 didentd: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-crypt.o \
 init-linux-chroot.o rijndael.o base64-encode.o pad.o txtparse.o scan_xlong.o scan_ushort.o\
-dnscache.a
+djblib.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
 didentd-name: didentd.o get_info4_linux.o  get_info6_linux.o didentd-genanswer-name.o \
 init-linux-chdir.o base64-encode.o scan_xlong.o scan_ushort.o\
-dnscache.a
+djblib.a
 	$(CC) $(CFLAGS) -o $@ $^
 
 didentd-static: didentd.o get_info4_linux.o get_info6_linux.o didentd-genanswer-static.o \
 init-linux-chroot.o base64-encode.o scan_xlong.o scan_ushort.o\
-dnscache.a
+djblib.a
 	$(CC) $(CFLAGS) -o $@ $^
 
 didentd-decrypt: didentd-decrypt.o \
 rijndael.o base64-decode.o pad.o txtparse.o \
-buffer_0.o dnscache.a
+buffer_0.o djblib.a
 	$(CC) $(CFLAGS) -o $@ $^
 
-didentd-conf: didentd-conf.c dnscache.a
+didentd-conf: didentd-conf.c djblib.a
 	$(CC) $(CFLAGS) -o $@ $^ 
 
-didentd-name-conf: didentd-name-conf.c dnscache.a
+didentd-name-conf: didentd-name-conf.c djblib.a
 	$(CC) $(CFLAGS) -o $@ $^ 
+
+djblib.a: djblib/*.c djblib/*.h
+	(cd djblib; make; ar cr ../djblib.a *.o)
 
 install: $(PROGS)
 	install -m 755 -s didentd didentd-name didentd-static /usr/local/bin
@@ -42,22 +43,9 @@ install: $(PROGS)
 
 clean:
 	rm -f $(PROGS) *.o 
+	(cd djblib; rm *.o)
 
 distclean:
-	-rm -f core $(PROGS) *~ *.o *.a
-	-rm -Rf dnscache*
+	-rm -f core $(PROGS) *~ *.o *.a 
+	(cd djblib; cat TARGETS |xargs rm -f)
 
-dnscache.a:
-	if [ ! -f dnscache-1.00-ipv6.diff5 ]; then \
-		$(DOWNLOADER) http://www.fefe.de/dns/dnscache-1.00-ipv6.diff5;\
-	fi
-	if [ ! -d dnscache ]; then \
-		$(DOWNLOADER) http://cr.yp.to/dnscache/dnscache-1.00.tar.gz; \
-		tar xzvf dnscache-1.00.tar.gz; rm dnscache-1.00.tar.gz; \
-		mv dnscache-1.00 dnscache; \
-		cd dnscache; patch < ../dnscache-1.00-ipv6.diff5; \
-        fi;	
-	cd dnscache; \
-	make; \
-	grep -l ^main *.c | perl -npe 's/^(.*).c/\1.o/;' | xargs rm -f; \
-	ar cr ../dnscache.a *.o;
