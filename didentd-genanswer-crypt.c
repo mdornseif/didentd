@@ -1,4 +1,4 @@
-/* $Id: didentd-genanswer-crypt.c,v 1.2 2000/04/19 13:40:27 drt Exp $
+/* $Id: didentd-genanswer-crypt.c,v 1.3 2000/04/25 22:55:01 drt Exp $
  * 
  * dident.c by drt@ailis.de
  * - generate a RfC 1413 reply containing 
@@ -11,6 +11,9 @@
  * I do not belive there is something like copyright. 
  *
  * $Log: didentd-genanswer-crypt.c,v $
+ * Revision 1.3  2000/04/25 22:55:01  drt
+ * code cleanups
+ *
  * Revision 1.2  2000/04/19 13:40:27  drt
  * base64 a la MIME encoding - see RfC1341
  *
@@ -26,7 +29,7 @@
 #include "rijndael.h"
 #include "base64.h"
 
-static char *rcsid = "$Id: didentd-genanswer-crypt.c,v 1.2 2000/04/19 13:40:27 drt Exp $";
+static char *rcsid = "$Id: didentd-genanswer-crypt.c,v 1.3 2000/04/25 22:55:01 drt Exp $";
 
 #define NULL 0
 
@@ -44,8 +47,6 @@ char *generate_answer(stralloc *answer, uint32 uid)
   char *key = KEY;
   char *problem = "ok";
   char buf[TAI_PACK];
-  char x[4];
-  int i;
   stralloc out = {0};
   stralloc tmp = {0};
   struct tai now;
