@@ -1,4 +1,4 @@
-/* $Id: init-freebsd-chroot.c,v 1.1 2001/10/12 12:27:48 drt Exp $
+/* $Id: init-freebsd-chroot.c,v 1.2 2001/10/14 05:57:15 drt Exp $
  *  --drt@un.bewaff.net - http://c0re.jp/c0de/didentd/
  *
  * this is initialisation code specific to freebsd
@@ -6,14 +6,33 @@
  *
  */
 
-static char rcsid[] = "$Id: init-freebsd-chroot.c,v 1.1 2001/10/12 12:27:48 drt Exp $";
+static char rcsid[] = "$Id: init-freebsd-chroot.c,v 1.2 2001/10/14 05:57:15 drt Exp $";
 
-#include "droproot.h"
+#include "env.h"
+#include "prot.h"
+#include "strerr.h"
+#include <unistd.h> /*chdir(), chroot() */
 
-void droppriv(char *dir, int dochroot);
+#define FATAL "didentd: fatal: "
+
+/* chroot() to $ROOT 
+ * this is based on DJBs droproot
+ *
+ * Note that chrooting without dropping the userid to something
+ * != 0 does not help much. root can break a chroot jail.
+ */
 
 void didentd_init()
 { 
-  /* chroot() to $ROOT and switch to $UID:$GID */
-  droproot("didentd: fatal: ");
+  char *dir;
+
+  dir = env_get("ROOT");
+  if (!dir)
+    strerr_die2x(111, FATAL, "$ROOT not set");
+			     
+  if (chdir(dir) == -1)
+    strerr_die4sys(111, FATAL, "unable to chdir to ", dir, ": ");
+  
+  if (chroot(".") == -1)
+    strerr_die4sys(111, FATAL, "unable to chroot to ", dir, ": ");
 }

@@ -1,49 +1,35 @@
-/* $Id: get_info4_freebsd.c,v 1.2 2001/10/12 12:29:03 drt Exp $
- *  --drt@un.bewaff.net 
+/* $Id: get_info4_freebsd.c,v 1.3 2001/10/14 05:57:15 drt Exp $
+ *  --drt@un.bewaff.net - http://c0re.jp/c0de/didentd/
  *
- * get info on an ipv4 connection on darwin and possible other 4.4bsd variants
+ * get info on an ipv4 connection on FreeBSD >= 3.x
  * 
  * You might find more info at http://c0re.jp/c0de/didentd/
  *
- * this code is based on code from pidentd and i had a look at apples
- * modifications on it for darwin.
- *
  */
-
-#include <unistd.h>              /* for close */
-#include <pwd.h>                 /* for getpwuid */
-
-#include "buffer.h"
-#include "byte.h"
-#include "env.h"
-#include "fmt.h"
-#include "getln.h"
-#include "ip4.h"
-#include "open.h"
-#include "prot.h"
-#include "scan.h"
-#include "str.h"
-#include "stralloc.h"
-#include "strerr.h"
-#include "timeoutread.h"
-#include "uint16.h"
-#include "uint32.h"
-
-static char rcsid[] = "$Id: get_info4_freebsd.c,v 1.2 2001/10/12 12:29:03 drt Exp $";
-
-#define FATAL "didentd: fatal: "
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <sys/proc.h> /* needed for freebsd */
+#include <sys/proc.h> 
+
+#include "byte.h"
+#include "strerr.h"
+#include "uint16.h"
+#include "uint32.h"
+
+static char rcsid[] = "$Id: get_info4_freebsd.c,v 1.3 2001/10/14 05:57:15 drt Exp $";
+
+#define WARN "didentd: warning: "
 
 
-/* returns the uid asociated with the IPv4 connection defined by 
-   lip, rip, lport, rport or 0xffffffff if unsucessfull 
+/* returns the uid asociated with the IPv4 connection defined by lip,
+   rip, lport, rport or 0xffffffff if unsucessfull. lip and rip are
+   expected to be in network byteorder, while lport and rport are
+   expected to be in host byteorder.
 
-   This is darwin specific and might work on other bsds
+   FreeBSD >= 3.x supports the sysctrl 'net.inet.tcp.getcred' as an
+   quite elegant way to get information about an TCP connection. 
  */
 
 uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
@@ -58,19 +44,20 @@ uint32 get_connection_info4(char *lip, uint16 lport, char *rip, uint16 rport)
    * from the internal ident support of FreeBSD's inetd.
    */
   
-  bzero((char *) sin4, sizeof(sin4));
+  byte_zero((char *) sin4, sizeof(sin4));
   sin4[1].sin_family = AF_INET;
   sin4[0].sin_family = AF_INET;
-  sin4[1].sin_port = lport;
-  sin4[0].sin_port = rport;
-  sin4[1].sin_port = htons(lport);
-  sin4[0].sin_port = htons(rport);
+  uint16_pack_big((void *) &sin4[0].sin_port, lport);
+  uint16_pack_big((void *) &sin4[1].sin_port, rport);
   /* TODO: check if we mixup host and network byte order */
-  bcopy("\177\000\000\001", (char *)&sin4[1].sin_addr, 4);
-  bcopy("\177\000\000\001", (char *)&sin4[0].sin_addr, 4);
+  byte_copy((char *)&sin4[0].sin_addr, 4, lip);
+  byte_copy((char *)&sin4[1].sin_addr, 4, rip);
   size = sizeof(uc); 
   if (sysctlbyname("net.inet.tcp.getcred", &uc, &size, sin4, sizeof(sin4)) == -1) 
-    strerr_die2sys(111, FATAL, "unable to sysctl 'net.inet.tcp.getcred': ");
+    {
+      strerr_warn2(WARN, "unable to sysctl 'net.inet.tcp.getcred': ", &strerr_sys);
+      return 0xffffffff;
+    }
 
   return (uint32) uc.cr_uid;
 }
