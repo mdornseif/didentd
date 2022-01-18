@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 This is didentd 0.1 - it has problems with IPv6 support.
 
 didentd is a ident server with paranoia in mind. See 
